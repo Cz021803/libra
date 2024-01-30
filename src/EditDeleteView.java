@@ -19,7 +19,7 @@ public class EditDeleteView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Create components
-        String[] registrationOptions = {"Select Option", "Edit Member", "Edit Book", "Delete Member", "Delete Book"};
+        String[] registrationOptions = {"Select Option", "Edit Member", "Edit Book", "Edit Admin", "Delete Member", "Delete Book", "Delete Admin"};
         JComboBox<String> registrationChoiceBox = new JComboBox<>(registrationOptions);
 
 
@@ -55,6 +55,11 @@ public class EditDeleteView extends JFrame {
                     dispose();
                     adminModel.editBook(searchField.getText());
                 }
+                else if(e.getSource() == editBtn && selectedOption.equals("Edit Admin"))
+                {
+                    dispose();
+                    adminModel.editAdmin(searchField.getText());
+                }
                 else
                 {
                     getContentPane().removeAll();
@@ -86,6 +91,14 @@ public class EditDeleteView extends JFrame {
                     add(controlPanel, BorderLayout.NORTH);
                     adminModel.deleteBook(searchField.getText());
                 }
+                else if(e.getSource() == deleteBtn && selectedOption.equals("Delete Admin"))
+                {
+                    getContentPane().removeAll();
+                    revalidate();
+                    repaint();
+                    add(controlPanel, BorderLayout.NORTH);
+                    adminModel.deleteAdmin(searchField.getText());
+                }
                 else
                 {
                     getContentPane().removeAll();
@@ -96,8 +109,6 @@ public class EditDeleteView extends JFrame {
                 }
             }
         });
-        searchFieldPanel.add(editBtn);
-        searchFieldPanel.add(deleteBtn);
 
         // Add action listener to choice box
         registrationChoiceBox.addActionListener(new ActionListener() {
@@ -109,12 +120,25 @@ public class EditDeleteView extends JFrame {
                 switch (selectedOption) {
                     case "Edit Member":
                     case "Edit Book":
-                    case "Delete Member":
-                    case "Delete Book":
+                    case "Edit Admin":
                         getContentPane().removeAll();
                         revalidate();
                         repaint();
                         add(controlPanel, BorderLayout.NORTH);
+                        searchFieldPanel.remove(deleteBtn);
+                        searchFieldPanel.add(editBtn);
+                        add(searchFieldPanel, BorderLayout.CENTER);
+                        setVisible(true);
+                        break;
+                    case "Delete Member":
+                    case "Delete Book":
+                    case "Delete Admin":
+                        getContentPane().removeAll();
+                        revalidate();
+                        repaint();
+                        add(controlPanel, BorderLayout.NORTH);
+                        searchFieldPanel.remove(editBtn);
+                        searchFieldPanel.add(deleteBtn);
                         add(searchFieldPanel, BorderLayout.CENTER);
                         setVisible(true);
                         break;

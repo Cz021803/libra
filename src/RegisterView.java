@@ -397,7 +397,6 @@ public class RegisterView extends JFrame {
                 String password = passwordField.getText();
                 int superAdmin;
 
-                //Hashing the password before inserting to the DB
                 if(superAdminBox.getSelectedItem().toString().equals("Yes"))
                 {
                     superAdmin = 1;
@@ -406,6 +405,7 @@ public class RegisterView extends JFrame {
                 {
                     superAdmin = 0;
                 }
+                //Hashing the password before inserting to the DB
                 String hashPw = BCrypt.withDefaults().hashToString(12,password.toCharArray());
                 boolean result = adminModel.registerAdmin(adminID, adminName, hashPw,superAdmin);
 

@@ -320,6 +320,134 @@ public class Admin extends JFrame {
 
   public boolean editAdmin(String keyword)
   {
+      setTitle("Edit Admin Detail");
+      setSize(800,600);
+      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+      JTextField adminIDField = new JTextField(20);
+      JTextField adminNameField = new JTextField(20);
+      JComboBox<String> superAdminBox = new JComboBox<>(new String[]{"Yes", "No"});
+
+      //home panel
+      JPanel homePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+      JButton homeBtn = new JButton("Home");
+      homeBtn.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+
+              dispose();
+              Home homepage = new Home();
+          }
+      });
+      homePanel.add(homeBtn);
+
+
+      try(PreparedStatement getAdmin = connection.prepareStatement("select * from admin where adminID = ? OR name = ?"))
+      {
+          getAdmin.setString(1, keyword);
+          getAdmin.setString(2, keyword);
+
+          ResultSet result = getAdmin.executeQuery();
+
+          if(result.next())
+          {
+              adminIDField.setText(result.getString("adminID"));
+              adminNameField.setText(result.getString("name"));
+              superAdminBox.setSelectedItem(result.getString("superAdmin"));
+          }
+
+      }catch(SQLException error)
+      {
+          error.printStackTrace();
+      }
+
+      JButton submitButton = new JButton("Edit");
+      JButton homeButton = new JButton("Delete");
+
+      // Create panel for components with a grid layout
+      JPanel mainPanel = new JPanel(new GridBagLayout());
+      GridBagConstraints gbc = new GridBagConstraints();
+      gbc.insets = new Insets(10, 10, 10, 10); // Padding
+
+      // Add header label
+      JLabel headerLabel = new JLabel("Book Registration");
+      headerLabel.setFont(new Font("Arial", Font.BOLD, 18));
+      gbc.gridx = 0;
+      gbc.gridy = 0;
+      gbc.gridwidth = 2;
+      gbc.anchor = GridBagConstraints.CENTER;
+      mainPanel.add(headerLabel, gbc);
+
+      // Reset gridwidth
+      gbc.gridwidth = 1;
+
+      // Add components to the panel
+      gbc.gridy++;
+      addLabelAndField("Admin ID:", adminIDField, gbc, mainPanel);
+      gbc.gridy++;
+      addLabelAndField("Admin Name:", adminNameField, gbc, mainPanel);
+      gbc.gridy++;
+      addLabelAndComboBox("Type:", superAdminBox, gbc, mainPanel);
+
+      gbc.gridx = 0;
+      gbc.gridy++;
+      gbc.gridwidth = 2;
+      gbc.anchor = GridBagConstraints.CENTER;
+      mainPanel.add(submitButton, gbc);
+
+      gbc.gridy++;
+      mainPanel.add(homeButton, gbc);
+
+      // Add action listeners
+      submitButton.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              // Handle submit button action
+              String adminID = adminIDField.getText();
+              String adminName = adminNameField.getText();
+              int superAdmin;
+
+              if(superAdminBox.getSelectedItem().toString().equals("Yes"))
+              {
+                  superAdmin = 1;
+              }
+              else
+              {
+                  superAdmin = 0;
+              }
+
+              try(PreparedStatement editAdmin = connection.prepareStatement("update admin set name = ?, superAdmin = ? where adminID = ?"))
+              {
+                  //set the parameter
+                  editAdmin.setString(1, adminName);
+                  editAdmin.setInt(2, superAdmin);
+                  editAdmin.setString(3, adminID);
+
+                  if(editAdmin.executeUpdate() == 1)
+                  {
+                      JOptionPane.showMessageDialog(null, keyword + " edited successfully");
+                  }
+                  else
+                  {
+                      JOptionPane.showMessageDialog(null, "Failed to edit " + keyword);
+                  }
+
+              }catch(SQLException err)
+              {
+                  err.printStackTrace();
+              }
+
+          }
+      });
+
+      // Set layout for the main frame
+      setLayout(new BorderLayout());
+      add(homePanel, BorderLayout.NORTH);
+      add(mainPanel, BorderLayout.CENTER);
+
+      // Center the form on the screen
+      setLocationRelativeTo(null);
+      setVisible(true);
       return false;
   }
 
@@ -396,6 +524,33 @@ public class Admin extends JFrame {
       }
 
   }
+
+    public void deleteAdmin(String keyword)
+    {
+
+        int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete admin " + keyword + "?", "Delete Confirmation", JOptionPane.YES_NO_OPTION);
+
+        if(option == JOptionPane.YES_OPTION)
+        {
+            try(PreparedStatement deleteAdmin = connection.prepareStatement("delete from admin where adminID = ?"))
+            {
+                deleteAdmin.setString(1, keyword);
+
+                if(deleteAdmin.executeUpdate() == 1)
+                {
+                    JOptionPane.showMessageDialog(null, "Admin " + keyword + " is deleted");
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(null, "Failed to delete Admin  " + keyword);
+                }
+            }catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+    }
 
     private void addLabelAndField(String labelText, JTextField textField, GridBagConstraints gbc, JPanel panel) {
         gbc.gridx = 0;

@@ -134,7 +134,7 @@ public class SearchView extends JFrame {
                         err.printStackTrace();
                     }
                 }
-                else
+                else if(record.equals("Borrow Record"))
                 {
                     try
                     {
@@ -153,6 +153,38 @@ public class SearchView extends JFrame {
                             Object[] rowData = new Object[]{
                                     i, result.getString("bookID"), result.getString("memberID"),
                                     result.getString("Bdate"), result.getString("Rdate")
+                            };
+
+                            //Add the row to the table model
+                            tableModel.addRow(rowData);
+                            i++;
+                        }
+                        resultTable.setModel(tableModel);
+
+                    }catch (SQLException err)
+                    {
+                        err.printStackTrace();
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        PreparedStatement getAdmin = connection.prepareStatement("select * from admin where adminID = ?");
+                        getAdmin.setString(1, keyword);
+                        ResultSet result = getAdmin.executeQuery();
+
+                        DefaultTableModel tableModel= new DefaultTableModel(
+                                new Object[][]{},
+                                new Object[]{"No.", "Admin ID", "Admin Name", "Super Admin"}
+                        );
+
+                        int i = 1;
+                        if(result.next())
+                        {
+                            Object[] rowData = new Object[]{
+                                    i, result.getString("adminID"), result.getString("name"),
+                                    result.getInt("superAdmin")
                             };
 
                             //Add the row to the table model
