@@ -16,6 +16,7 @@ public class SearchView extends JFrame {
     private JTextField searchField;
     private JTable resultTable = new JTable();
     private Connection connection;
+    private Admin adminModel = new Admin();
 
     public SearchView() {
 
@@ -35,7 +36,7 @@ public class SearchView extends JFrame {
 
         // Create a panel for the search type selection and home button
         JPanel selectAndHomePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JComboBox<String> searchTypeComboBox = new JComboBox<>(new String[]{"Member Record", "Book Record", "Borrow Record"});
+        JComboBox<String> searchTypeComboBox = new JComboBox<>(new String[]{"Member Record", "Book Record", "Borrow Record", "Admin Record"});
         selectAndHomePanel.add(new JLabel("Select Search Type:"));
         selectAndHomePanel.add(searchTypeComboBox);
 
@@ -186,7 +187,10 @@ public class SearchView extends JFrame {
         setVisible(true);
     }
 
-
+public static void main(String[] args)
+{
+    new SearchView();
+}
 
 }
 

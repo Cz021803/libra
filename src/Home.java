@@ -21,12 +21,14 @@ public class Home extends JFrame
         JButton penaltyBtn = createCardButton("Pay Penalty");
         JButton searchBtn = createCardButton("Search Member/Book/Borrow Record");
         JButton registerBtn = createCardButton("Register Member/Book");
+        JButton editDeleteBtn = createCardButton("Edit or Delete Member/Book");
 
         menu.add(borrowBtn);
         menu.add(returnBtn);
         menu.add(penaltyBtn);
         menu.add(searchBtn);
         menu.add(registerBtn);
+        menu.add(editDeleteBtn);
 
         JPanel logout = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton logoutBtn = new JButton("Logout");
@@ -105,11 +107,16 @@ public class Home extends JFrame
                     dispose();
                     SearchView searchview = new SearchView();
                 }
-                else
+                else if(e.getSource() == button && buttonText.equals("Register Member/Book"))
                 {
                     dispose();
                     RegisterView registerview = new RegisterView();
 
+                }
+                else
+                {
+                    dispose();
+                    EditDeleteView editdeleteview = new EditDeleteView();
                 }
             }
         });
