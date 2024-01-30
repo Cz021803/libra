@@ -330,7 +330,7 @@ public class Admin extends JFrame {
 
   public void deleteMember(String keyword)
   {
-      int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete member ?" + keyword, "Delete Confirmation", JOptionPane.YES_NO_OPTION);
+      int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete member " + keyword + "?", "Delete Confirmation", JOptionPane.YES_NO_OPTION);
 
       if(option == JOptionPane.YES_OPTION)
       {
@@ -356,7 +356,7 @@ public class Admin extends JFrame {
   public void deleteBook(String keyword)
   {
 
-      int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete book ?" + keyword, "Delete Confirmation", JOptionPane.YES_NO_OPTION);
+      int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete book " + keyword + "?", "Delete Confirmation", JOptionPane.YES_NO_OPTION);
 
       if(option == JOptionPane.YES_OPTION)
       {
