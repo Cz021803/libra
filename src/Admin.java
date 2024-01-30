@@ -328,38 +328,56 @@ public class Admin extends JFrame {
       return false;
   }
 
-  public boolean deleteMember(String keyword)
+  public void deleteMember(String keyword)
   {
-      try(PreparedStatement deleteMember = connection.prepareStatement("delete from member where memberID = ?"))
-      {
-          deleteMember.setString(1, keyword);
+      int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete member ?" + keyword, "Delete Confirmation", JOptionPane.YES_NO_OPTION);
 
-          if(deleteMember.executeUpdate() == 1)
-          {
-              return true;
-          }
-      }catch(SQLException e)
+      if(option == JOptionPane.YES_OPTION)
       {
-          e.printStackTrace();
+          try(PreparedStatement deleteMember = connection.prepareStatement("delete from member where memberID = ?"))
+          {
+              deleteMember.setString(1, keyword);
+
+              if(deleteMember.executeUpdate() == 1)
+              {
+                  JOptionPane.showMessageDialog(null, "Member " + keyword + " is deleted");
+              }
+              else
+              {
+                  JOptionPane.showMessageDialog(null, "Failed to delete member " + keyword);
+              }
+          }catch(SQLException e)
+          {
+              e.printStackTrace();
+          }
       }
-      return false;
   }
 
-  public boolean deleteBook(String keyword)
+  public void deleteBook(String keyword)
   {
-      try(PreparedStatement deleteBook = connection.prepareStatement("delete from book where bookID = ?"))
-      {
-          deleteBook.setString(1, keyword);
 
-          if(deleteBook.executeUpdate() == 1)
-          {
-              return true;
-          }
-      }catch(SQLException e)
+      int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete book ?" + keyword, "Delete Confirmation", JOptionPane.YES_NO_OPTION);
+
+      if(option == JOptionPane.YES_OPTION)
       {
-          e.printStackTrace();
+          try(PreparedStatement deleteBook = connection.prepareStatement("delete from book where bookID = ?"))
+          {
+              deleteBook.setString(1, keyword);
+
+              if(deleteBook.executeUpdate() == 1)
+              {
+                  JOptionPane.showMessageDialog(null, "Book " + keyword + " is deleted");
+              }
+              else
+              {
+                  JOptionPane.showMessageDialog(null, "Failed to delete book  " + keyword);
+              }
+          }catch(SQLException e)
+          {
+              e.printStackTrace();
+          }
       }
-      return false;
+
   }
 
     private void addLabelAndField(String labelText, JTextField textField, GridBagConstraints gbc, JPanel panel) {
