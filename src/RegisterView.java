@@ -106,7 +106,7 @@ public class RegisterView extends JFrame {
         memberNameField = new JTextField(20);
         memberEmailField = new JTextField(20);
         majorField = new JTextField(20);
-        typeField = new JComboBox<>(new String[]{"Fiction", "Non-Fiction", "Journal", "Reference"});
+        typeField = new JComboBox<>(new String[]{"Student", "Vip Student", "Teacher", "Vip Teacher"});
         phoneNumberField = new JTextField(20);
 
         JButton submitButton = new JButton("Submit");
