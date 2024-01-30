@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jan 30, 2024 at 03:46 AM
+-- Generation Time: Jan 30, 2024 at 11:47 AM
 -- Server version: 8.0.35
 -- PHP Version: 8.2.8
 
@@ -40,10 +40,9 @@ CREATE TABLE `admin` (
 
 INSERT INTO `admin` (`adminID`, `name`, `password`, `superAdmin`) VALUES
 ('123123', 'Ghghgh', '$2y$10$NRlq4Sl2Q7qejhV.WYTxoORc41mgye1bDD2FF6beQxN/QF4w6IZx.', 0),
-('cq2003', 'Tee Cheng Qi', '$2y$10$H0.XekaKlF17A7SkBhll.O5gry0kiFNSZLOl.Wk3sXEHExifJ0p7m', 0),
 ('mk2000', 'Test1234', '$2y$10$Su.zGNYwbfQpoTTCNcMIb.Pn5Ij2gV31vcBmBZ5l9a1bQ97XvGJIK', 0),
-('mk2003', 'Melvin', 'social18', 1),
-('mk2004', 'Test', '$2y$10$lK4SMqKpmg11F14QitHxs.J77ohNQsEUbZI.jLnuTNDbYBRmGaCpS', 0);
+('mk2003', 'Melvin Kwan', '$2a$12$og0YLY1lZ6pr79CLEtLGzeW/T33gC3lfQxYlSLCuUnd87fbBMsfpm', 1),
+('mk2004', 'Another', '$2y$10$lK4SMqKpmg11F14QitHxs.J77ohNQsEUbZI.jLnuTNDbYBRmGaCpS', 0);
 
 -- --------------------------------------------------------
 
@@ -78,8 +77,7 @@ INSERT INTO `book` (`bookID`, `title`, `author`, `publisher`, `type`, `price`, `
 ('F000109', 'Chainsawman', 'Fujimoto Tatsuki', 'Tongli', 'Fiction', 25.00, '54632987654', '2022-09-01 17:17:39', 'Available'),
 ('F000110', 'Firepunch', 'Fujimoto Tatsuki', 'Tongli', 'Fiction', 25.00, '52636354152', '2022-09-01 17:19:24', 'Available'),
 ('F000111', 'Aku No Hana', 'Oshimi Syuzo', 'Tongli', 'Fiction', 25.00, '54233632155', '2022-09-01 17:22:30', 'Available'),
-('F000112', 'Gyaru Gohan', 'Taiyo Marii', 'Tongli', 'Fiction', 25.00, '456321456', '2022-09-01 17:33:32', 'Available'),
-('F000113', 'Dragon Ball 2', 'Toriyama Akira', 'Tongli', 'Fiction', 20.00, '12365225523', '2022-09-20 12:05:08', 'Available');
+('F000112', 'Gyaru Gohan', 'Taiyo Marii', 'Tongli', 'Fiction', 25.00, '456321456', '2022-09-01 17:33:32', 'Available');
 
 -- --------------------------------------------------------
 
@@ -112,12 +110,7 @@ INSERT INTO `borrow` (`borrowID`, `bookID`, `memberID`, `Bdate`, `Rdate`, `statu
 (8, 'F000102', '2324763', '2024-01-24 ', '2024-01-31', 'Returned', 0.00),
 (9, 'F000102', '2324763', '2024-01-15', '2024-01-22', 'Returned', 0.00),
 (10, 'F000001', '2324763', '2024-01-15', '2024-01-22', 'Returned', 0.00),
-(11, 'F000102', '2324763', '2024-01-15', '2024-01-22', 'Returned', 0.00),
-(24, 'F000001', '1211103616', '2024-01-15', '2024-01-22', 'Returned', 0.00),
-(26, 'F000103', '1211103685', '2024-01-22', '2024-01-29', 'Returned', 1.00),
-(27, 'F000102', '1211103616', '2024-01-30 ', '2024-02-06', 'Returned', 0.00),
-(28, 'F000104', '1211103616', '2024-01-22', '2024-01-29', 'Returned', 0.00),
-(29, 'F000105', '1211103685', '2024-01-22', '2024-01-29', 'Returned', 1.00);
+(11, 'F000102', '2324763', '2024-01-15', '2024-01-22', 'Returned', 0.00);
 
 -- --------------------------------------------------------
 
@@ -140,9 +133,8 @@ CREATE TABLE `member` (
 --
 
 INSERT INTO `member` (`memberID`, `name`, `major`, `level`, `telephone`, `email`, `penalty`) VALUES
-('1211103616', 'Goh Yee Xhuan', 'ST', 'Student', '0113434343', '1211103616@student.mmu.edu.my', 0.00),
-('1211103685', 'Thu Xin Yun', 'BIA', 'Student', '0303030303', '1211103685@student.mmu.edu.my', 0.00),
-('2324763', 'Melvin Kwan ', '5 Delima', 'Student', '0123456789', 'melvinkwanys@gmail.com', 8.00);
+('1211103685', 'Thu Xin Yun', 'BIA', 'Student', '0112345678', '1211103685@student.mmu.edu.my', 0.00),
+('2324763', 'Melvin Kwan Yii Syn', '5 Delima', 'Student', '0123456789', 'melvinkwanys@gmail.com', 0.00);
 
 -- --------------------------------------------------------
 
@@ -287,7 +279,7 @@ CREATE TABLE `pma__recent` (
 --
 
 INSERT INTO `pma__recent` (`username`, `tables`) VALUES
-('root', '[{\"db\":\"oop_library\",\"table\":\"borrow\"},{\"db\":\"oop_library\",\"table\":\"member\"},{\"db\":\"oop_library\",\"table\":\"book\"},{\"db\":\"oop_library\",\"table\":\"admin\"},{\"db\":\"oop_library\",\"table\":\"request\"},{\"db\":\"library\",\"table\":\"member\"},{\"db\":\"library\",\"table\":\"admin\"},{\"db\":\"library\",\"table\":\"book\"},{\"db\":\"library\",\"table\":\"borrow\"},{\"db\":\"assignment_tracker\",\"table\":\"assignment\"}]');
+('root', '[{\"db\":\"oop_library\",\"table\":\"borrow\"},{\"db\":\"oop_library\",\"table\":\"book\"},{\"db\":\"oop_library\",\"table\":\"member\"},{\"db\":\"oop_library\",\"table\":\"admin\"},{\"db\":\"oop_library\",\"table\":\"request\"},{\"db\":\"library\",\"table\":\"member\"},{\"db\":\"library\",\"table\":\"admin\"},{\"db\":\"library\",\"table\":\"book\"},{\"db\":\"library\",\"table\":\"borrow\"},{\"db\":\"assignment_tracker\",\"table\":\"assignment\"}]');
 
 -- --------------------------------------------------------
 
@@ -349,7 +341,8 @@ CREATE TABLE `pma__table_info` (
 --
 
 INSERT INTO `pma__table_info` (`db_name`, `table_name`, `display_field`) VALUES
-('assignment_tracker', 'assignment', 'description');
+('assignment_tracker', 'assignment', 'description'),
+('oop_library', 'borrow', 'Bdate');
 
 -- --------------------------------------------------------
 
@@ -408,7 +401,7 @@ CREATE TABLE `pma__userconfig` (
 --
 
 INSERT INTO `pma__userconfig` (`username`, `timevalue`, `config_data`) VALUES
-('root', '2024-01-30 01:18:44', '{\"Console\\/Mode\":\"collapse\",\"NavigationWidth\":182,\"DefaultConnectionCollation\":\"utf8mb4_0900_ai_ci\"}');
+('root', '2024-01-30 11:46:37', '{\"Console\\/Mode\":\"collapse\",\"NavigationWidth\":182,\"DefaultConnectionCollation\":\"\"}');
 
 -- --------------------------------------------------------
 
@@ -672,8 +665,8 @@ ALTER TABLE `request`
 -- Constraints for table `borrow`
 --
 ALTER TABLE `borrow`
-  ADD CONSTRAINT `bookID` FOREIGN KEY (`bookID`) REFERENCES `book` (`bookID`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `memberID` FOREIGN KEY (`memberID`) REFERENCES `member` (`memberID`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `bookID` FOREIGN KEY (`bookID`) REFERENCES `book` (`bookID`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `memberID` FOREIGN KEY (`memberID`) REFERENCES `member` (`memberID`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `request`
