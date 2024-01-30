@@ -38,5 +38,17 @@ public class Admin {
       return false;
   }
 
+  public boolean deleteMember()
+  {
+      return false;
+  }
+
+  public boolean deleteBook()
+  {
+      return false;
+  }
+
+
+
 
 }
