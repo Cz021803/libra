@@ -253,13 +253,4 @@ public class ExportFileView extends JFrame {
         setVisible(true);
     }
 
-    private boolean exportMember()
-    {
-        return false;
-    }
-
-    public static void main(String[] args)
-    {
-        new ExportFileView();
-    }
 }

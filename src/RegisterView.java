@@ -349,9 +349,4 @@ public class RegisterView extends JFrame {
         panel.add(comboBox, gbc);
     }
 
-    public static void main(String[] args)
-    {
-        new RegisterView();
-    }
-
 }
