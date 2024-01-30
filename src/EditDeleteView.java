@@ -78,7 +78,7 @@ public class EditDeleteView extends JFrame {
                     add(controlPanel, BorderLayout.NORTH);
                     adminModel.deleteMember(searchField.getText());
                 }
-                else if(e.getSource() == editBtn && selectedOption.equals("Delete Book"))
+                else if(e.getSource() == deleteBtn && selectedOption.equals("Delete Book"))
                 {
                     getContentPane().removeAll();
                     revalidate();
