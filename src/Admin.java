@@ -323,8 +323,25 @@ public class Admin extends JFrame {
       return false;
   }
 
-  public boolean registerAdmin()
+  public boolean registerAdmin(String adminID, String adminName, String password, int superAdmin)
   {
+      try(PreparedStatement registerAdmin = connection.prepareStatement("insert into admin values(?,?,?,?)"))
+      {
+          registerAdmin.setString(1, adminID);
+          registerAdmin.setString(2, adminName);
+          registerAdmin.setString(3, password);
+          registerAdmin.setInt(4, superAdmin);
+
+          if(registerAdmin.executeUpdate() == 1)
+          {
+              return true;
+          }
+
+      }catch(SQLException e)
+      {
+          e.printStackTrace();
+      }
+
       return false;
   }
 

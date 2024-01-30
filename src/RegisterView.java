@@ -1,3 +1,4 @@
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import jdk.nashorn.internal.scripts.JO;
 
 import javax.swing.*;
@@ -10,9 +11,7 @@ public class RegisterView extends JFrame {
 
     private Book bookModel = new Book();
     private Member memberModel = new Member();
-
-    private JPanel mainPanel;
-    private CardLayout cardLayout;
+    private Admin adminModel = new Admin();
 
     private JTextField memberIdField;
     private JTextField memberNameField;
@@ -29,6 +28,11 @@ public class RegisterView extends JFrame {
     private JTextField priceField;
     private JTextField isbnField;
 
+    private JTextField adminIDField;
+    private JTextField adminNameField;
+    private JTextField passwordField;
+    private JComboBox<String> superAdminBox;
+
 
     public RegisterView() {
         setTitle("Registration Page");
@@ -36,7 +40,7 @@ public class RegisterView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Create components
-        String[] registrationOptions = {"Select Option", "Register Member", "Register Book"};
+        String[] registrationOptions = {"Select Option", "Register Member", "Register Book", "Register Admin"};
         JComboBox<String> registrationChoiceBox = new JComboBox<>(registrationOptions);
 
 
@@ -70,6 +74,13 @@ public class RegisterView extends JFrame {
                         repaint();
                         add(controlPanel, BorderLayout.NORTH);
                         bookRegisterForm();
+                        break;
+                    case "Register Admin":
+                        getContentPane().removeAll();
+                        revalidate();
+                        repaint();
+                        add(controlPanel, BorderLayout.NORTH);
+                        adminRegisterForm();
                         break;
                     default:
                         break;
@@ -303,6 +314,116 @@ public class RegisterView extends JFrame {
                     priceField.setText("");
                     isbnField.setText("");
                     JOptionPane.showMessageDialog(null, "Failed to register book");
+                }
+            }
+        });
+
+        homeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Handle home button action
+                dispose();
+                Home homepage = new Home();;
+            }
+        });
+
+        // Set layout for the main frame
+        setLayout(new BorderLayout());
+        add(mainPanel, BorderLayout.CENTER);
+
+        // Center the form on the screen
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    public void adminRegisterForm()
+    {
+        setTitle("Admin Registration Form");
+        setSize(800, 600);  // Initial size
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Create components
+        adminIDField = new JTextField(20);
+        adminNameField = new JTextField(20);
+        passwordField = new JTextField(20);
+        superAdminBox = new JComboBox<>(new String[]{"Yes", "No"});
+
+        JButton submitButton = new JButton("Submit");
+        JButton homeButton = new JButton("Home");
+
+        // Create panel for components with a grid layout
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Padding
+
+        // Add header label
+        JLabel headerLabel = new JLabel("Admin Registration");
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        mainPanel.add(headerLabel, gbc);
+
+        // Reset gridwidth
+        gbc.gridwidth = 1;
+
+        // Add components to the panel
+        gbc.gridy++;
+        addLabelAndField("Admin ID:", adminIDField, gbc, mainPanel);
+        gbc.gridy++;
+        addLabelAndField("Admin Name:", adminNameField, gbc, mainPanel);
+        gbc.gridy++;
+        addLabelAndField("Password", passwordField, gbc, mainPanel);
+        gbc.gridy++;
+        addLabelAndComboBox("Type:", superAdminBox, gbc, mainPanel);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        mainPanel.add(submitButton, gbc);
+
+        gbc.gridy++;
+        mainPanel.add(homeButton, gbc);
+
+        // Add action listeners
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Handle submit button action
+                String adminID = adminIDField.getText();
+                String adminName = adminNameField.getText();
+                String password = passwordField.getText();
+                int superAdmin;
+
+                //Hashing the password before inserting to the DB
+                if(superAdminBox.getSelectedItem().toString().equals("Yes"))
+                {
+                    superAdmin = 1;
+                }
+                else
+                {
+                    superAdmin = 0;
+                }
+                String hashPw = BCrypt.withDefaults().hashToString(12,password.toCharArray());
+                boolean result = adminModel.registerAdmin(adminID, adminName, hashPw,superAdmin);
+
+                if(result)
+                {
+                    adminIDField.setText("");
+                    adminNameField.setText("");
+                    passwordField.setText("");
+                    superAdminBox.setSelectedIndex(1);
+                    JOptionPane.showMessageDialog(null, adminID + " is registered");
+                }
+                else
+                {
+                    adminIDField.setText("");
+                    adminNameField.setText("");
+                    passwordField.setText("");
+                    superAdminBox.setSelectedIndex(1);
+                    JOptionPane.showMessageDialog(null, "Failed to register " + adminID);
                 }
             }
         });

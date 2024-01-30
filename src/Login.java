@@ -1,3 +1,5 @@
+import at.favre.lib.crypto.bcrypt.BCrypt;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -87,14 +89,18 @@ public class Login extends JFrame {
     private boolean validLogin(String uID, String pwd)
     {
         try{
-            PreparedStatement statement = connection.prepareStatement("select * from admin where adminID = ? AND password = ?");
+            PreparedStatement statement = connection.prepareStatement("select * from admin where adminID = ?");
             statement.setString(1,uID);
-            statement.setString(2,pwd);
             ResultSet result = statement.executeQuery();
 
             if(result.next())
             {
-                return true;
+                BCrypt.Result verify = BCrypt.verifyer().verify(pwd.toCharArray(), result.getString("password"));
+
+                if(verify.verified)
+                {
+                    return true;
+                }
             }
 
         }
