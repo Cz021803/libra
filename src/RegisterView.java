@@ -346,7 +346,7 @@ public class RegisterView extends JFrame {
         adminIDField = new JTextField(20);
         adminNameField = new JTextField(20);
         passwordField = new JTextField(20);
-        superAdminBox = new JComboBox<>(new String[]{"Yes", "No"});
+        superAdminBox = new JComboBox<>(new String[]{"Super Admin", "Admin"});
 
         JButton submitButton = new JButton("Submit");
         JButton homeButton = new JButton("Home");
@@ -397,7 +397,7 @@ public class RegisterView extends JFrame {
                 String password = passwordField.getText();
                 int superAdmin;
 
-                if(superAdminBox.getSelectedItem().toString().equals("Yes"))
+                if(superAdminBox.getSelectedItem().toString().equals("Super Admin"))
                 {
                     superAdmin = 1;
                 }
