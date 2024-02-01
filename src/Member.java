@@ -24,6 +24,7 @@ public class Member {
 
             ResultSet result = getPenalty.executeQuery();
 
+
             if(result.next())
             {
                 return result.getDouble("penalty");

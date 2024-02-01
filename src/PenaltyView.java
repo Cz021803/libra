@@ -60,7 +60,16 @@ public class PenaltyView extends JFrame {
                 if(e.getSource() == payBtn)
                 {
                     String mID = memberID.getText();
+
+                    try{
+                        Double.parseDouble(amount.getText());
+                    }catch(NumberFormatException nfe)
+                    {
+                        JOptionPane.showMessageDialog(null, "Please enter only numbers for amount");
+                    }
+
                     double penalty = Double.parseDouble(amount.getText());
+
 
                     if(penalty < 0)
                     {
@@ -75,17 +84,23 @@ public class PenaltyView extends JFrame {
 
                         if(penalty > 0)
                         {
-                            memberID.setText("");
                             amount.setText("");
                             JOptionPane.showMessageDialog(null, "You still need to pay RM " + penalty);
                         }
                         else
                         {
-                            memberID.setText("");
                             amount.setText("");
                             JOptionPane.showMessageDialog(null, "You have no penalty due now. Thank you");
                         }
                     }
+                    else{
+
+                        memberID.setText("");
+                        amount.setText("");
+                        JOptionPane.showMessageDialog(null, "Please enter a valid Member ID");
+
+                    }
+
                 }
 
 
