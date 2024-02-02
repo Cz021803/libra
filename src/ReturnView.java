@@ -59,7 +59,7 @@ public class ReturnView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                Home homepage = new Home();
+                new Home();
             }
         });
         homepage.add(homeBtn);

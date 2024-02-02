@@ -46,7 +46,7 @@ public class SearchView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                Home homepage = new Home();
+                new Home();
             }
         });
         selectAndHomePanel.add(homeButton);

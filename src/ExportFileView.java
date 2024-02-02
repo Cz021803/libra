@@ -55,7 +55,7 @@ public class ExportFileView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Handle home button action
                 dispose();
-                Home homepage = new Home();
+                new Home();
             }
         });
         home.add(homeButton);

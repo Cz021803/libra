@@ -93,7 +93,7 @@ public class RegisterView extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 dispose();
-                Home homepage = new Home();
+                new Home();
             }
         });
         controlPanel.add(homeBtn);
@@ -205,7 +205,7 @@ public class RegisterView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Handle home button action
                 dispose();
-                Home homepage = new Home();
+                new Home();
             }
         });
 
@@ -323,7 +323,7 @@ public class RegisterView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Handle home button action
                 dispose();
-                Home homepage = new Home();;
+                new Home();;
             }
         });
 
@@ -434,7 +434,7 @@ public class RegisterView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Handle home button action
                 dispose();
-                Home homepage = new Home();;
+                new Home();;
             }
         });
 

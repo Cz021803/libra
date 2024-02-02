@@ -153,7 +153,7 @@ public class EditDeleteView extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 dispose();
-                Home homepage = new Home();
+                new Home();
             }
         });
         controlPanel.add(homeBtn);

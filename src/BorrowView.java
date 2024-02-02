@@ -151,7 +151,7 @@ public class BorrowView extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 dispose();
-                Home homepage = new Home();
+                new Home();
             }
         });
         homepage.add(homeBtn);
