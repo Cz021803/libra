@@ -44,7 +44,11 @@ public class BorrowView extends JFrame {
                 String bID = bookID.getText();
                 String mID = memberID.getText();
 
-                if(validateBorrow(bID, mID) == 1)
+                if(validateBorrow(bID, mID) == -1)
+                {
+                    JOptionPane.showMessageDialog(BorrowView.this, "Book ID/MemberID might be invalid");
+                }
+                else if(validateBorrow(bID, mID) == 1)
                 {
                     JOptionPane.showMessageDialog(BorrowView.this, "This book is borrowed");
                 }

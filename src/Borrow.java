@@ -1,9 +1,5 @@
-import com.mysql.cj.x.protobuf.MysqlxPrepare;
-
-import javax.xml.transform.Result;
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
@@ -148,13 +144,14 @@ public class Borrow {
                 return 1;
             }
 
+
             // Check if there is any unpaid penalty
-            if (checkPenalty.next() && checkPenalty.getInt("penalty") > 0) {
+            else if (checkPenalty.next() && checkPenalty.getInt("penalty") > 0) {
                 return 2;
             }
 
             // Check if member exceeded their borrow limit
-            if (level.next()) {
+            else if (level.next()) {
                 int borrowLimit = 0;
 
                 // Set the borrow limit based on the member's level
@@ -163,8 +160,6 @@ public class Borrow {
                         borrowLimit = 2;
                         break;
                     case "Vip Student":
-                        borrowLimit = 4;
-                        break;
                     case "Teacher":
                         borrowLimit = 4;
                         break;
@@ -183,6 +178,9 @@ public class Borrow {
                 } else {
                     return 0;
                 }
+            }
+            else{
+                return -1;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -244,6 +242,10 @@ public class Borrow {
                     returnBook(bookID);
                     return 0;
                 }
+            }
+            else
+            {
+                return -1;
             }
         } catch (Exception e) {
             e.printStackTrace();

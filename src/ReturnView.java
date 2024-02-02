@@ -40,8 +40,11 @@ public class ReturnView extends JFrame {
                 double penalty = validateReturn(bID);
 
                 bookID.setText("");
-
-                if(penalty > 0)
+                if(penalty == -1)
+                {
+                    JOptionPane.showMessageDialog(ReturnView.this, "Book ID might be invalid");
+                }
+                else if(penalty > 0)
                 {
                     JOptionPane.showMessageDialog(ReturnView.this, "You will need to pay RM" + penalty + " in total");
                 }
