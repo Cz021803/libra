@@ -70,16 +70,13 @@ public class Admin extends JFrame {
               phoneNumberField.setText(result.getString("telephone"));
           }
 
-          System.out.println("here");
-
-
       }catch(SQLException error)
       {
           error.printStackTrace();
       }
 
-      JButton submitButton = new JButton("Edit");
-      JButton homeButton = new JButton("Delete");
+      JButton editButton = new JButton("Edit");
+      JButton backButton = new JButton("Back");
 
       // Create panel for components with a grid layout
       JPanel mainPanel = new JPanel(new GridBagLayout());
@@ -87,7 +84,7 @@ public class Admin extends JFrame {
       gbc.insets = new Insets(10, 10, 10, 10); // Padding
 
       // Add header label
-      JLabel headerLabel = new JLabel("Member Registration");
+      JLabel headerLabel = new JLabel("Edit Member Detail");
       headerLabel.setFont(new Font("Arial", Font.BOLD, 18));
       gbc.gridx = 0;
       gbc.gridy = 0;
@@ -116,13 +113,13 @@ public class Admin extends JFrame {
       gbc.gridy++;
       gbc.gridwidth = 2;
       gbc.anchor = GridBagConstraints.CENTER;
-      mainPanel.add(submitButton, gbc);
+      mainPanel.add(editButton, gbc);
 
       gbc.gridy++;
-      mainPanel.add(homeButton, gbc);
+      mainPanel.add(backButton, gbc);
 
       // Add action listeners
-      submitButton.addActionListener(new ActionListener() {
+      editButton.addActionListener(new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
               // Handle submit button action
@@ -157,6 +154,17 @@ public class Admin extends JFrame {
                   err.printStackTrace();
               }
 
+          }
+      });
+
+      backButton.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              if(e.getSource() == backButton)
+              {
+                  dispose();
+                  new Home();
+              }
           }
       });
 
@@ -222,8 +230,8 @@ public class Admin extends JFrame {
           error.printStackTrace();
       }
 
-      JButton submitButton = new JButton("Edit");
-      JButton homeButton = new JButton("Delete");
+      JButton editButton = new JButton("Edit");
+      JButton backButton = new JButton("Back");
 
       // Create panel for components with a grid layout
       JPanel mainPanel = new JPanel(new GridBagLayout());
@@ -231,7 +239,7 @@ public class Admin extends JFrame {
       gbc.insets = new Insets(10, 10, 10, 10); // Padding
 
       // Add header label
-      JLabel headerLabel = new JLabel("Book Registration");
+      JLabel headerLabel = new JLabel("Edit Book Detail");
       headerLabel.setFont(new Font("Arial", Font.BOLD, 18));
       gbc.gridx = 0;
       gbc.gridy = 0;
@@ -262,13 +270,13 @@ public class Admin extends JFrame {
       gbc.gridy++;
       gbc.gridwidth = 2;
       gbc.anchor = GridBagConstraints.CENTER;
-      mainPanel.add(submitButton, gbc);
+      mainPanel.add(backButton, gbc);
 
       gbc.gridy++;
-      mainPanel.add(homeButton, gbc);
+      mainPanel.add(backButton, gbc);
 
       // Add action listeners
-      submitButton.addActionListener(new ActionListener() {
+      backButton.addActionListener(new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
               // Handle submit button action
@@ -307,6 +315,17 @@ public class Admin extends JFrame {
           }
       });
 
+      backButton.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              if(e.getSource() == backButton)
+              {
+                  dispose();
+                  new Home();
+              }
+          }
+      });
+
       // Set layout for the main frame
       setLayout(new BorderLayout());
       add(homePanel, BorderLayout.NORTH);
@@ -326,7 +345,7 @@ public class Admin extends JFrame {
 
       JTextField adminIDField = new JTextField(20);
       JTextField adminNameField = new JTextField(20);
-      JComboBox<String> superAdminBox = new JComboBox<>(new String[]{"Yes", "No"});
+      JComboBox<String> superAdminBox = new JComboBox<>(new String[]{"Super Admin", "Admin"});
 
       //home panel
       JPanel homePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -361,8 +380,8 @@ public class Admin extends JFrame {
           error.printStackTrace();
       }
 
-      JButton submitButton = new JButton("Edit");
-      JButton homeButton = new JButton("Delete");
+      JButton editButton = new JButton("Edit");
+      JButton backButton = new JButton("Delete");
 
       // Create panel for components with a grid layout
       JPanel mainPanel = new JPanel(new GridBagLayout());
@@ -393,13 +412,13 @@ public class Admin extends JFrame {
       gbc.gridy++;
       gbc.gridwidth = 2;
       gbc.anchor = GridBagConstraints.CENTER;
-      mainPanel.add(submitButton, gbc);
+      mainPanel.add(editButton, gbc);
 
       gbc.gridy++;
-      mainPanel.add(homeButton, gbc);
+      mainPanel.add(backButton, gbc);
 
       // Add action listeners
-      submitButton.addActionListener(new ActionListener() {
+      editButton.addActionListener(new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
               // Handle submit button action

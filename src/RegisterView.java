@@ -377,6 +377,7 @@ public class RegisterView extends JFrame {
         addLabelAndField("Password", passwordField, gbc, mainPanel);
         gbc.gridy++;
         addLabelAndComboBox("Type:", superAdminBox, gbc, mainPanel);
+        superAdminBox.setSelectedIndex(2);
 
         gbc.gridx = 0;
         gbc.gridy++;
