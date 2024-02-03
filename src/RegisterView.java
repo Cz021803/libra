@@ -80,7 +80,10 @@ public class RegisterView extends JFrame {
                         revalidate();
                         repaint();
                         add(controlPanel, BorderLayout.NORTH);
-                        adminRegisterForm();
+                        if(Login.superAdmin)
+                        {
+                            adminRegisterForm();
+                        }
                         break;
                     default:
                         break;
