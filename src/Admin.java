@@ -276,7 +276,7 @@ public class Admin extends JFrame {
       mainPanel.add(backButton, gbc);
 
       // Add action listeners
-      backButton.addActionListener(new ActionListener() {
+      editButton.addActionListener(new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
               // Handle submit button action
@@ -456,6 +456,17 @@ public class Admin extends JFrame {
                   err.printStackTrace();
               }
 
+          }
+      });
+
+      backButton.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              if(e.getSource() == backButton)
+              {
+                  dispose();
+                  new Home();
+              }
           }
       });
 
