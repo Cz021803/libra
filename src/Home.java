@@ -19,9 +19,9 @@ public class Home extends JFrame
         JButton borrowBtn = createCardButton("Borrow Book");
         JButton returnBtn = createCardButton("Return Book");
         JButton penaltyBtn = createCardButton("Pay Penalty");
-        JButton searchBtn = createCardButton("Search Member/Book/Borrow Record");
-        JButton registerBtn = createCardButton("Register Member/Book");
-        JButton editDeleteBtn = createCardButton("Edit or Delete Member/Book");
+        JButton searchBtn = createCardButton("Search");
+        JButton registerBtn = createCardButton("Register");
+        JButton editDeleteBtn = createCardButton("Edit or Delete");
 
         menu.add(borrowBtn);
         menu.add(returnBtn);
