@@ -29,6 +29,10 @@ public class Member {
             {
                 return result.getDouble("penalty");
             }
+            else
+            {
+                return -1;
+            }
 
         }catch(SQLException e)
         {

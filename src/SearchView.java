@@ -176,7 +176,7 @@ public class SearchView extends JFrame {
 
                         DefaultTableModel tableModel= new DefaultTableModel(
                                 new Object[][]{},
-                                new Object[]{"No.", "Admin ID", "Admin Name", "Super Admin"}
+                                new Object[]{"No.", "Admin ID", "Admin Name", "Type"}
                         );
 
                         int i = 1;
@@ -184,7 +184,7 @@ public class SearchView extends JFrame {
                         {
                             Object[] rowData = new Object[]{
                                     i, result.getString("adminID"), result.getString("name"),
-                                    result.getInt("superAdmin")
+                                    result.getString("type")
                             };
 
                             //Add the row to the table model

@@ -1,5 +1,4 @@
 import at.favre.lib.crypto.bcrypt.BCrypt;
-import jdk.nashorn.internal.scripts.JO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,7 +30,7 @@ public class RegisterView extends JFrame {
     private JTextField adminIDField;
     private JTextField adminNameField;
     private JTextField passwordField;
-    private JComboBox<String> superAdminBox;
+    private JComboBox<String> type;
 
 
     public RegisterView() {
@@ -80,6 +79,7 @@ public class RegisterView extends JFrame {
                         revalidate();
                         repaint();
                         add(controlPanel, BorderLayout.NORTH);
+                        adminRegisterForm();
                         break;
                     default:
                         break;
@@ -345,7 +345,7 @@ public class RegisterView extends JFrame {
         adminIDField = new JTextField(20);
         adminNameField = new JTextField(20);
         passwordField = new JTextField(20);
-        superAdminBox = new JComboBox<>(new String[]{"Super Admin", "Admin"});
+        typeField = new JComboBox<>(new String[]{"Junior Librarian", "Senior Librarian"});
 
         JButton submitButton = new JButton("Submit");
         JButton homeButton = new JButton("Home");
@@ -375,8 +375,8 @@ public class RegisterView extends JFrame {
         gbc.gridy++;
         addLabelAndField("Password", passwordField, gbc, mainPanel);
         gbc.gridy++;
-        addLabelAndComboBox("Type:", superAdminBox, gbc, mainPanel);
-        superAdminBox.setSelectedIndex(2);
+        addLabelAndComboBox("Type:", typeField, gbc, mainPanel);
+        typeField.setSelectedIndex(0);
 
         gbc.gridx = 0;
         gbc.gridy++;
@@ -395,26 +395,18 @@ public class RegisterView extends JFrame {
                 String adminID = adminIDField.getText();
                 String adminName = adminNameField.getText();
                 String password = passwordField.getText();
-                int superAdmin;
+                String type = (String) typeField.getSelectedItem();
 
-                if(superAdminBox.getSelectedItem().toString().equals("Super Admin"))
-                {
-                    superAdmin = 1;
-                }
-                else
-                {
-                    superAdmin = 0;
-                }
                 //Hashing the password before inserting to the DB
                 String hashPw = BCrypt.withDefaults().hashToString(12,password.toCharArray());
-                boolean result = adminModel.registerAdmin(adminID, adminName, hashPw,superAdmin);
+                boolean result = adminModel.registerAdmin(adminID, adminName, hashPw,type);
 
                 if(result)
                 {
                     adminIDField.setText("");
                     adminNameField.setText("");
                     passwordField.setText("");
-                    superAdminBox.setSelectedIndex(1);
+                    typeField.setSelectedIndex(1);
                     JOptionPane.showMessageDialog(null, adminID + " is registered");
                 }
                 else
@@ -422,7 +414,7 @@ public class RegisterView extends JFrame {
                     adminIDField.setText("");
                     adminNameField.setText("");
                     passwordField.setText("");
-                    superAdminBox.setSelectedIndex(1);
+                    typeField.setSelectedIndex(1);
                     JOptionPane.showMessageDialog(null, "Failed to register " + adminID);
                 }
             }

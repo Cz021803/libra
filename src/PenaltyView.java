@@ -35,7 +35,11 @@ public class PenaltyView extends JFrame {
                     double penalty = memberModel.getPenalty(mID);
 
                     //display the penalty
-                    if(penalty > 0)
+                    if(penalty == -1)
+                    {
+                        JOptionPane.showMessageDialog(searchBtn, "Please enter a valid member ID");
+                    }
+                    else if(penalty > 0)
                     {
                         JOptionPane.showMessageDialog(searchBtn, "You have a penalty due of RM " + penalty);
                     }

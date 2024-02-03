@@ -345,7 +345,7 @@ public class Admin extends JFrame {
 
       JTextField adminIDField = new JTextField(20);
       JTextField adminNameField = new JTextField(20);
-      JComboBox<String> superAdminBox = new JComboBox<>(new String[]{"Super Admin", "Admin"});
+      JComboBox<String> typeField = new JComboBox<>(new String[]{"Junior Librarian", "Senior Librarian"});
 
       //home panel
       JPanel homePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -372,7 +372,7 @@ public class Admin extends JFrame {
           {
               adminIDField.setText(result.getString("adminID"));
               adminNameField.setText(result.getString("name"));
-              superAdminBox.setSelectedItem(result.getString("superAdmin"));
+              typeField.setSelectedItem(result.getString("type"));
           }
 
       }catch(SQLException error)
@@ -381,7 +381,7 @@ public class Admin extends JFrame {
       }
 
       JButton editButton = new JButton("Edit");
-      JButton backButton = new JButton("Delete");
+      JButton backButton = new JButton("Back");
 
       // Create panel for components with a grid layout
       JPanel mainPanel = new JPanel(new GridBagLayout());
@@ -389,7 +389,7 @@ public class Admin extends JFrame {
       gbc.insets = new Insets(10, 10, 10, 10); // Padding
 
       // Add header label
-      JLabel headerLabel = new JLabel("Book Registration");
+      JLabel headerLabel = new JLabel("Edit Admin Detail");
       headerLabel.setFont(new Font("Arial", Font.BOLD, 18));
       gbc.gridx = 0;
       gbc.gridy = 0;
@@ -406,7 +406,7 @@ public class Admin extends JFrame {
       gbc.gridy++;
       addLabelAndField("Admin Name:", adminNameField, gbc, mainPanel);
       gbc.gridy++;
-      addLabelAndComboBox("Type:", superAdminBox, gbc, mainPanel);
+      addLabelAndComboBox("Type:", typeField, gbc, mainPanel);
 
       gbc.gridx = 0;
       gbc.gridy++;
@@ -424,22 +424,13 @@ public class Admin extends JFrame {
               // Handle submit button action
               String adminID = adminIDField.getText();
               String adminName = adminNameField.getText();
-              int superAdmin;
-
-              if(superAdminBox.getSelectedItem().toString().equals("Yes"))
-              {
-                  superAdmin = 1;
-              }
-              else
-              {
-                  superAdmin = 0;
-              }
+              String type = (String) typeField.getSelectedItem();
 
               try(PreparedStatement editAdmin = connection.prepareStatement("update admin set name = ?, superAdmin = ? where adminID = ?"))
               {
                   //set the parameter
                   editAdmin.setString(1, adminName);
-                  editAdmin.setInt(2, superAdmin);
+                  editAdmin.setString(2, type);
                   editAdmin.setString(3, adminID);
 
                   if(editAdmin.executeUpdate() == 1)
@@ -481,14 +472,14 @@ public class Admin extends JFrame {
       return false;
   }
 
-  public boolean registerAdmin(String adminID, String adminName, String password, int superAdmin)
+  public boolean registerAdmin(String adminID, String adminName, String password, String type)
   {
       try(PreparedStatement registerAdmin = connection.prepareStatement("insert into admin values(?,?,?,?)"))
       {
           registerAdmin.setString(1, adminID);
           registerAdmin.setString(2, adminName);
           registerAdmin.setString(3, password);
-          registerAdmin.setInt(4, superAdmin);
+          registerAdmin.setString(4, type);
 
           if(registerAdmin.executeUpdate() == 1)
           {
