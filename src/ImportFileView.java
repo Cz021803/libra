@@ -9,8 +9,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class ImportFileView extends JFrame {
 
@@ -160,7 +162,20 @@ public class ImportFileView extends JFrame {
                             while((line = input.readLine()) != null)
                             {
                                 String data[] = line.split(",");
-                                output = borrowModel.insertRecord(data[0], data[1], data[2], data[3]);
+                                String sqlFormat = "yyyy-MM-dd"; // Format of the input date string
+                                String excelFormat = "MM/dd/yyyy"; // Desired output format
+
+
+                                SimpleDateFormat excelFormatter = new SimpleDateFormat(excelFormat);
+                                Date Bdate = excelFormatter.parse(data[2]);
+                                Date Rdate = excelFormatter.parse(data[3]);
+
+                                SimpleDateFormat sqlFormatter = new SimpleDateFormat((sqlFormat));
+                                String formattedBdate = sqlFormatter.format(Bdate);
+                                String formattedRdate = sqlFormatter.format(Rdate);
+
+
+                                output = borrowModel.insertRecord(data[0], data[1], formattedBdate, formattedRdate);
                             }
 
                             if(output)
