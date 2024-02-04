@@ -163,7 +163,7 @@ public class Admin extends JFrame {
               if(e.getSource() == backButton)
               {
                   dispose();
-                  new Home();
+                  new EditDeleteView();
               }
           }
       });
@@ -321,7 +321,7 @@ public class Admin extends JFrame {
               if(e.getSource() == backButton)
               {
                   dispose();
-                  new Home();
+                  new EditDeleteView();
               }
           }
       });
@@ -456,7 +456,7 @@ public class Admin extends JFrame {
               if(e.getSource() == backButton)
               {
                   dispose();
-                  new Home();
+                  new EditDeleteView();
               }
           }
       });
