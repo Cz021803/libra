@@ -42,20 +42,6 @@ public class Login extends JFrame {
 
                     if(validLogin(uID, pwd))
                     {
-                        try(PreparedStatement getAdminType = connection.prepareStatement("select superAdmin from admin where adminID = ?")){
-
-                            getAdminType.setString(1, uID);
-                            ResultSet result = getAdminType.executeQuery();
-
-                            if(result.next() && result.getInt("superAdmin") == 1)
-                            {
-                                superAdmin = true;
-                            }
-
-                        }catch(SQLException err)
-                        {
-                            err.printStackTrace();
-                        }
 
                         JOptionPane.showMessageDialog(password, "Login Successful");
                         dispose();
