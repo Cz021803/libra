@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -33,12 +35,25 @@ public class ReturnView extends JFrame {
 
         //Button
         JButton returnBtn = new JButton("Return");
+
+        returnBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                returnBtn.setBackground(Color.GRAY); // Change to desired hover color
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                returnBtn.setBackground(UIManager.getColor("Button.background")); // Reset to default color
+            }
+        });
+
         returnBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String bID = bookID.getText();
                 double penalty = validateReturn(bID);
-
+                returnBtn.setBackground(Color.YELLOW); // Change to desired click color
                 bookID.setText("");
                 if(penalty == -1)
                 {
@@ -58,6 +73,19 @@ public class ReturnView extends JFrame {
 
         JPanel homepage = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton homeBtn = new JButton("Home");
+
+        homeBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                homeBtn.setBackground(Color.GRAY); // Change to desired hover color
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                homeBtn.setBackground(UIManager.getColor("Button.background")); // Reset to default color
+            }
+        });
+
         homeBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

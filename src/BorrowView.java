@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -38,12 +40,25 @@ public class BorrowView extends JFrame {
 
         //Button
         JButton borrowBtn = new JButton("Borrow");
+
+        borrowBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                borrowBtn.setBackground(Color.GRAY); // Change to desired hover color
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                borrowBtn.setBackground(UIManager.getColor("Button.background")); // Reset to default color
+            }
+        });
+
         borrowBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String bID = bookID.getText();
                 String mID = memberID.getText();
-
+                borrowBtn.setBackground(Color.YELLOW); // Change to desired click color
                 if(validateBorrow(bID, mID) == -1)
                 {
                     JOptionPane.showMessageDialog(BorrowView.this, "Book ID/MemberID might be invalid");
@@ -150,10 +165,22 @@ public class BorrowView extends JFrame {
 
         JPanel homepage = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton homeBtn = new JButton("Home");
+
+        homeBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                homeBtn.setBackground(Color.GRAY); // Change to desired hover color
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                homeBtn.setBackground(UIManager.getColor("Button.background")); // Reset to default color
+            }
+        });
+
         homeBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 dispose();
                 new Home();
             }

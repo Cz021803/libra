@@ -1,9 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -24,6 +21,19 @@ public class PenaltyView extends JFrame {
 
         //Button
         JButton searchBtn = new JButton("Search");
+
+        searchBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                searchBtn.setBackground(Color.GRAY); // Change to desired hover color
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                searchBtn.setBackground(UIManager.getColor("Button.background")); // Reset to default color
+            }
+        });
+
         searchBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -37,14 +47,17 @@ public class PenaltyView extends JFrame {
                     //display the penalty
                     if(penalty == -1)
                     {
+                        searchBtn.setBackground(Color.YELLOW); // Change to desired click color
                         JOptionPane.showMessageDialog(searchBtn, "Please enter a valid member ID");
                     }
                     else if(penalty > 0)
                     {
+                        searchBtn.setBackground(Color.YELLOW); // Change to desired click color
                         JOptionPane.showMessageDialog(searchBtn, "You have a penalty due of RM " + penalty);
                     }
                     else
                     {
+                        searchBtn.setBackground(Color.YELLOW); // Change to desired click color
                         JOptionPane.showMessageDialog(searchBtn, "You have no penalty due");
                     }
                 }
