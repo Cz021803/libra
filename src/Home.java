@@ -160,12 +160,12 @@ public class Home extends JFrame
                     dispose();
                     PenaltyView penaltyview = new PenaltyView();
                 }
-                else if(e.getSource() == button && buttonText.equals("Search Member/Book/Borrow Record"))
+                else if(e.getSource() == button && buttonText.equals("Search"))
                 {
                     dispose();
                     SearchView searchview = new SearchView();
                 }
-                else if(e.getSource() == button && buttonText.equals("Register Member/Book"))
+                else if(e.getSource() == button && buttonText.equals("Register"))
                 {
                     dispose();
                     RegisterView registerview = new RegisterView();
