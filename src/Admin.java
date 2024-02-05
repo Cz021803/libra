@@ -297,6 +297,7 @@ public class Admin extends JFrame {
                   editBook.setString(4, type);
                   editBook.setDouble(5, price);
                   editBook.setString(6, isbn);
+                  editBook.setString(7, bookID);
 
                   if(editBook.executeUpdate() == 1)
                   {
@@ -426,7 +427,7 @@ public class Admin extends JFrame {
               String adminName = adminNameField.getText();
               String type = (String) typeField.getSelectedItem();
 
-              try(PreparedStatement editAdmin = connection.prepareStatement("update admin set name = ?, superAdmin = ? where adminID = ?"))
+              try(PreparedStatement editAdmin = connection.prepareStatement("update admin set name = ?, type = ? where adminID = ?"))
               {
                   //set the parameter
                   editAdmin.setString(1, adminName);
