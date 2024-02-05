@@ -270,7 +270,7 @@ public class Admin extends JFrame {
       gbc.gridy++;
       gbc.gridwidth = 2;
       gbc.anchor = GridBagConstraints.CENTER;
-      mainPanel.add(backButton, gbc);
+      mainPanel.add(editButton, gbc);
 
       gbc.gridy++;
       mainPanel.add(backButton, gbc);
