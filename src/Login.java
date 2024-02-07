@@ -75,20 +75,20 @@ public class Login extends JFrame {
         {
             public void actionPerformed(ActionEvent e)
             {
-               String uID = userID.getText();
-               String pwd = password.getText();
-               loginBtn.setBackground(Color.YELLOW);
-               if(validLogin(uID, pwd))
-               {
-                   JOptionPane.showMessageDialog(loginBtn, "Login Successful");
-                   dispose();
-                   Home homepage = new Home();
+                String uID = userID.getText();
+                String pwd = password.getText();
+                loginBtn.setBackground(Color.YELLOW);
+                if(validLogin(uID, pwd))
+                {
+                    JOptionPane.showMessageDialog(loginBtn, "Login Successful");
+                    dispose();
+                    Home homepage = new Home();
 
-               }
-               else
-               {
-                   JOptionPane.showMessageDialog(loginBtn, "User ID or Password may be incorrect");
-               }
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(loginBtn, "User ID or Password may be incorrect");
+                }
             }
         });
 
