@@ -11,7 +11,7 @@ public class PenaltyView extends JFrame {
     public PenaltyView()
     {
         setTitle("Penalty Page");
-        setSize(600, 400);
+        setSize(1000, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel penaltyPanel = new JPanel(new FlowLayout());
@@ -90,6 +90,56 @@ public class PenaltyView extends JFrame {
         });
 
         JTextField amount = new JTextField(20);
+
+        amount.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_ENTER)
+                {
+                    String mID = amount.getText();
+
+                    try{
+                        Double.parseDouble(amount.getText());
+                    }catch(NumberFormatException nfe)
+                    {
+                        JOptionPane.showMessageDialog(null, "Please enter only numbers for amount");
+                    }
+
+                    double penalty = Double.parseDouble(amount.getText());
+
+
+                    if(penalty <= 0)
+                    {
+                        JOptionPane.showMessageDialog(null, "Amount must be greater than 0");
+                    }
+
+                    boolean result = memberModel.payPenalty(mID, penalty);
+
+                    if(result)
+                    {
+                        penalty = memberModel.getPenalty(mID);
+
+                        if(penalty > 0)
+                        {
+                            amount.setText("");
+                            JOptionPane.showMessageDialog(null, "You still need to pay RM " + penalty);
+                        }
+                        else
+                        {
+                            amount.setText("");
+                            JOptionPane.showMessageDialog(null, "You have no penalty due now. Thank you");
+                        }
+                    }
+                    else{
+
+                        amount.setText("");
+                        amount.setText("");
+                        JOptionPane.showMessageDialog(null, "Please enter a valid Member ID");
+
+                    }
+                }
+            }
+        });
         penaltyPanel.add(createPanel("Amount", amount));
 
         //Button
@@ -112,7 +162,7 @@ public class PenaltyView extends JFrame {
                     double penalty = Double.parseDouble(amount.getText());
 
 
-                    if(penalty < 0)
+                    if(penalty <= 0)
                     {
                         JOptionPane.showMessageDialog(payBtn, "Amount must be greater than 0");
                     }

@@ -1,9 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -26,7 +23,7 @@ public class BorrowView extends JFrame {
         }
 
         setTitle("Borrow Page");
-        setSize(600, 400);
+        setSize(1000,800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // create a panel for the borrow form
@@ -34,6 +31,118 @@ public class BorrowView extends JFrame {
 
         JTextField bookID = new JTextField(20);
         JTextField memberID = new JTextField(20);
+
+        memberID.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_ENTER)
+                {
+                    String bID = bookID.getText();
+                    String mID = memberID.getText();
+
+                    if(validateBorrow(bID, mID) == -1)
+                    {
+                        JOptionPane.showMessageDialog(BorrowView.this, "Book ID/MemberID might be invalid");
+                    }
+                    else if(validateBorrow(bID, mID) == 1)
+                    {
+                        JOptionPane.showMessageDialog(BorrowView.this, "This book is borrowed");
+                    }
+                    else if(validateBorrow(bID, mID) == 2)
+                    {
+                        JOptionPane.showMessageDialog(BorrowView.this, "You have unpaid penalty");
+                    }
+                    else if(validateBorrow(bID,mID) == 3)
+                    {
+                        JOptionPane.showMessageDialog(BorrowView.this, "You exceeded your borrowing limit");
+                    }
+                    else if(validateBorrow(bID, mID) == 4)
+                    {
+                        JOptionPane.showMessageDialog(BorrowView.this, "You status does not exist");
+                    }
+                    else
+                    {
+                        try(PreparedStatement studentLevel = connection.prepareStatement("select * from member where memberID = ?");)
+                        {
+                            //to determine the return date based on the member's level
+                            studentLevel.setString(1, mID);
+                            ResultSet level = studentLevel.executeQuery();
+
+                            if(level.next() && level.getString("level").equals("Student"))
+                            {
+                                //get the return date
+                                LocalDateTime Bdate = LocalDateTime.now();
+                                LocalDateTime Rdate = Bdate.plusDays(7); // Add 7 day
+
+                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+                                //convert the date to string
+                                String formatBdate = Bdate.format(formatter);
+                                String formatRdate = Rdate.format(formatter);
+
+                                //insert the record
+                                borrowModel.insertRecord(bID, mID, formatBdate, formatRdate);
+                                JOptionPane.showMessageDialog(BorrowView.this, "Borrowed Successfully");
+                            }
+                            else if(level.getString("level").equals("Vip Student"))
+                            {
+                                //get the return date
+                                LocalDateTime Bdate = LocalDateTime.now();
+                                LocalDateTime Rdate = Bdate.plusDays(14); // Add 7 day
+
+                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd ");
+
+                                //convert the date to string
+                                String formatBdate = Bdate.format(formatter);
+                                String formatRdate = Rdate.format(formatter);
+
+                                //insert the record
+                                borrowModel.insertRecord(bID, mID, formatBdate, formatRdate);
+                                JOptionPane.showMessageDialog(BorrowView.this, "Borrowed Successfully");
+                            }
+                            else if(level.getString("level").equals("Teacher"))
+                            {
+                                //get the return date
+                                LocalDateTime Bdate = LocalDateTime.now();
+                                LocalDateTime Rdate = Bdate.plusDays(14); // Add 7 day
+
+                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd ");
+
+                                //convert the date to string
+                                String formatBdate = Bdate.format(formatter);
+                                String formatRdate = Rdate.format(formatter);
+
+                                borrowModel.insertRecord(bID, mID, formatBdate, formatRdate);
+                                JOptionPane.showMessageDialog(BorrowView.this, "Borrowed Successfully");
+                            }
+                            else
+                            {
+                                //get the return date
+                                LocalDateTime Bdate = LocalDateTime.now();
+                                LocalDateTime Rdate = Bdate.plusDays(21); // Add 7 day
+
+                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd ");
+
+                                //convert the date to string
+                                String formatBdate = Bdate.format(formatter);
+                                String formatRdate = Rdate.format(formatter);
+
+                                borrowModel.insertRecord(bID, mID, formatBdate, formatRdate);
+                                JOptionPane.showMessageDialog(BorrowView.this, "Borrowed Successfully");
+                            }
+
+                        }catch(Exception err)
+                        {
+                            err.printStackTrace();
+                        }
+
+                    }
+
+                    bookID.setText("");
+                    memberID.setText("");
+                }
+            }
+        });
 
         borrowPanel.add(createPanel("Book ID", bookID));
         borrowPanel.add(createPanel("Member ID", memberID));

@@ -35,7 +35,7 @@ public class RegisterView extends JFrame {
 
     public RegisterView() {
         setTitle("Registration Page");
-        setSize(800, 600);
+        setSize(1000, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Create components
@@ -108,7 +108,7 @@ public class RegisterView extends JFrame {
     public void memberRegisterForm() {
 
         setTitle("Member Registration Form");
-        setSize(800, 600);  // Increased initial size
+        setSize(1000, 800);  // Increased initial size
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Create components
@@ -220,7 +220,7 @@ public class RegisterView extends JFrame {
     public void bookRegisterForm() {
 
         setTitle("Book Registration Form");
-        setSize(800, 600);  // Initial size
+        setSize(1000, 800);  // Initial size
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Create components
@@ -338,7 +338,7 @@ public class RegisterView extends JFrame {
     public void adminRegisterForm()
     {
         setTitle("Admin Registration Form");
-        setSize(800, 600);  // Initial size
+        setSize(1000, 800);  // Initial size
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Create components

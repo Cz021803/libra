@@ -22,15 +22,18 @@ public class Login extends JFrame {
         }
 
         setTitle("Login Form");
-        setSize(800,600);
+        setSize(1000,800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(1,2));
 
-        // Load the GIF image
+        // Load the image and resize it
         ImageIcon icon = new ImageIcon(this.getClass().getResource("/login.jpg"));
+        Image img = icon.getImage();
+        Image resizedImg = img.getScaledInstance(500, 800, Image.SCALE_SMOOTH);
+        icon = new ImageIcon(resizedImg);
         JLabel label = new JLabel(icon);
-        label.setSize(100,150);
         add(label);
+
 
 
         JPanel loginPanel = new JPanel(new GridBagLayout());

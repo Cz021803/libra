@@ -28,7 +28,7 @@ public class SearchView extends JFrame {
         }
 
         setTitle("Search Page");
-        setSize(500, 300);
+        setSize(1000, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Create a panel for the components with a grid layout

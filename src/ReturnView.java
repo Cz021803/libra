@@ -1,9 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -23,7 +20,7 @@ public class ReturnView extends JFrame {
         }
 
         setTitle("Return Page");
-        setSize(600, 400);
+        setSize(1000, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // create a panel for the borrow form
@@ -31,10 +28,37 @@ public class ReturnView extends JFrame {
 
         JTextField bookID = new JTextField(20);
 
+
         returnPanel.add(createPanel("Book ID", bookID));
 
         //Button
         JButton returnBtn = new JButton("Return");
+
+        bookID.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_ENTER)
+                {
+                    String bID = bookID.getText();
+                    double penalty = validateReturn(bID);
+                    returnBtn.setBackground(Color.YELLOW); // Change to desired click color
+                    bookID.setText("");
+                    if(penalty == -1)
+                    {
+                        JOptionPane.showMessageDialog(ReturnView.this, "Book ID might be invalid");
+                    }
+                    else if(penalty > 0)
+                    {
+                        JOptionPane.showMessageDialog(ReturnView.this, "You will need to pay RM" + penalty + " in total");
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(ReturnView.this, "Returned Successfully");
+                    }
+                }
+            }
+        });
+
 
         returnBtn.addMouseListener(new MouseAdapter() {
             @Override
