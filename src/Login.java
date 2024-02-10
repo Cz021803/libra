@@ -10,7 +10,7 @@ public class Login extends JFrame {
     private JTextField userID;
     private JPasswordField password;
     private Connection connection;
-    public static boolean superAdmin;
+    public static String adminType;
 
     public Login()
     {
@@ -156,6 +156,7 @@ public class Login extends JFrame {
 
                 if(verify.verified)
                 {
+                    setAdminType();
                     return true;
                 }
             }
@@ -167,6 +168,30 @@ public class Login extends JFrame {
         }
 
         return false;
+    }
+
+    public void setAdminType()
+    {
+        try(PreparedStatement getAdminType = connection.prepareStatement("select type from admin where adminID = ?"))
+        {
+            getAdminType.setString(1, userID.getText());
+            ResultSet result = getAdminType.executeQuery();
+
+            if(result.next())
+            {
+                adminType = result.getString("type");
+            }
+
+        }catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static String getAdminType()
+    {
+        return adminType;
     }
 
 }

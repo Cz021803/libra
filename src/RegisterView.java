@@ -1,9 +1,12 @@
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import jdk.nashorn.internal.scripts.JO;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 
 public class RegisterView extends JFrame {
@@ -34,6 +37,7 @@ public class RegisterView extends JFrame {
 
 
     public RegisterView() {
+
         setTitle("Registration Page");
         setSize(1000, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -79,7 +83,15 @@ public class RegisterView extends JFrame {
                         revalidate();
                         repaint();
                         add(controlPanel, BorderLayout.NORTH);
-                        adminRegisterForm();
+
+                        if(Login.getAdminType().equals("Junior Librarian"))
+                        {
+                            JOptionPane.showMessageDialog(null, "Only senior librarian can register new admin");
+                        }
+                        else
+                        {
+                            adminRegisterForm();
+                        }
                         break;
                     default:
                         break;
