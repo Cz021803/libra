@@ -35,6 +35,7 @@ public class ImportFileView extends JFrame {
         JButton chooseFileButton = new JButton("Choose File");
         JButton importButton = new JButton("Import");
         JButton homeButton = new JButton("Home");
+        JLabel selectedFileLabel = new JLabel("Selected File: ");
 
         // Create panel for components with a grid layout
         JPanel mainPanel = new JPanel(new GridBagLayout());
@@ -62,6 +63,10 @@ public class ImportFileView extends JFrame {
         mainPanel.add(importChoiceBox, gbc);
 
         gbc.gridx = 0;
+        gbc.gridy = 1;
+        mainPanel.add(selectedFileLabel, gbc);
+
+        gbc.gridx = 0;
         gbc.gridy++;
         mainPanel.add(chooseFileButton, gbc);
 
@@ -69,6 +74,8 @@ public class ImportFileView extends JFrame {
         mainPanel.add(importButton, gbc);
 
         gbc.gridy++;
+
+
 
         // Add action listeners
         chooseFileButton.addActionListener(new ActionListener() {
@@ -82,6 +89,7 @@ public class ImportFileView extends JFrame {
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
                     fileName = selectedFile.getName();
+                    selectedFileLabel.setText("Selected File: " + fileName);
                 }
             }
         });
