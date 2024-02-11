@@ -29,7 +29,7 @@ public class EditDeleteView extends JFrame {
         // Create panel for components with a grid layout
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton homeBtn = new JButton("Home");
-        controlPanel.add(new JLabel("Select Registration Type:"));
+        controlPanel.add(new JLabel("Select Edit or Delete Type:"));
         controlPanel.add(registrationChoiceBox);
 
         // Create a panel for the search field
