@@ -105,7 +105,16 @@ public class EditDeleteView extends JFrame {
                     revalidate();
                     repaint();
                     add(controlPanel, BorderLayout.NORTH);
-                    adminModel.deleteAdmin(searchField.getText());
+
+                    if(Login.getAdminType().equals("Senior Librarian"))
+                    {
+                        adminModel.deleteAdmin(searchField.getText());
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(null, "Only Senior Librarian can delete librarian record");
+                    }
+
                 }
                 else
                 {
