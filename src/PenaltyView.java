@@ -150,7 +150,7 @@ public class PenaltyView extends JFrame {
 
                 if(e.getSource() == payBtn)
                 {
-                    String mID = amount.getText();
+                    String mID = memberID.getText();
 
                     try{
                         Double.parseDouble(amount.getText());
