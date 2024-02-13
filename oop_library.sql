@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Feb 12, 2024 at 04:13 PM
--- Server version: 8.0.35
--- PHP Version: 8.2.8
+-- Host: 127.0.0.1
+-- Generation Time: Feb 13, 2024 at 08:32 AM
+-- Server version: 10.4.27-MariaDB
+-- PHP Version: 8.1.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -21,19 +21,6 @@ SET time_zone = "+00:00";
 -- Database: `oop_library`
 --
 
-DELIMITER $$
---
--- Procedures
---
-CREATE DEFINER=`root`@`localhost` PROCEDURE `list_penalty` ()   select * from member having penalty > 0$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `most_borrowed` ()   select borrow.memberID, member.name, member.class, member.email,count(borrow.memberID) as amount from borrow inner join member on borrow.memberID = member.memberID where status = "Returned" AND month(borrow.Bdate) = month(CURRENT_DATE()) AND year(borrow.Bdate) = year(CURRENT_DATE()) group by borrow.memberID order by amount DESC$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `reminder` ()   select borrow.memberID as mID, member.name, member.email, borrow.bookID as bID, book.title,borrow.Bdate, borrow.Rdate from borrow inner join member on borrow.memberID = member.memberID inner join book on borrow.bookID = book.bookID Where status = 'Borrowing' having DATEDIFF(Rdate,CURRENT_DATE()) <= 3
-order by borrow.bookID$$
-
-DELIMITER ;
-
 -- --------------------------------------------------------
 
 --
@@ -41,10 +28,10 @@ DELIMITER ;
 --
 
 CREATE TABLE `admin` (
-  `adminID` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `type` varchar(35) COLLATE utf8mb4_unicode_ci NOT NULL
+  `adminID` varchar(15) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `password` longtext NOT NULL,
+  `type` varchar(40) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -53,23 +40,12 @@ CREATE TABLE `admin` (
 
 INSERT INTO `admin` (`adminID`, `name`, `password`, `type`) VALUES
 ('123123', 'Ghghgh', '$2y$10$NRlq4Sl2Q7qejhV.WYTxoORc41mgye1bDD2FF6beQxN/QF4w6IZx.', 'Junior Librarian'),
+('hm2003', 'Soong Hoe Mun', '$2a$12$WyaCTy3kALMo7pgd6Th7OO6lqyWQmeJJKfRwGMpoHu224xUAo08Sy', 'Senior Librarian'),
+('hm2004', 'Hoe ', '$2a$12$Rk9RwJZoGBxeR6nYGNpmLeyypBp24voMG6I8EUUSwNc3rDFbmMbnW', 'Junior Librarian'),
 ('mk2000', 'Test1234', '$2y$10$Su.zGNYwbfQpoTTCNcMIb.Pn5Ij2gV31vcBmBZ5l9a1bQ97XvGJIK', 'Junior Librarian'),
-('mk2003', 'Melvin Kwan', '$2a$12$og0YLY1lZ6pr79CLEtLGzeW/T33gC3lfQxYlSLCuUnd87fbBMsfpm', 'Senior Librarian'),
+('mk2003', 'Melvin Kwan', '$2a$12$og0YLY1lZ6pr79CLEtLGzeW/T33gC3lfQxYlSLCuUnd87fbBMsfpm', 'Junior Librarian'),
 ('mk2004', 'Another', '$2y$10$lK4SMqKpmg11F14QitHxs.J77ohNQsEUbZI.jLnuTNDbYBRmGaCpS', 'Junior Librarian'),
-('mk2006', 'Testing', '$2a$12$cPgGn6fengS2kYBWSvdp.ek2C.DY4hHAiwmyYSvYhAaqIFWoggmoq', 'Junior Librarian'),
-('user1', 'user1', '$2a$12$6Oyu1PF/7/.C/u/sjjAhMeZDZGBZd/FE8cVBLowRBzltjE7VYE.2.', 'Senior Librarian');
-
---
--- Triggers `admin`
---
-DELIMITER $$
-CREATE TRIGGER `insert_admin` BEFORE INSERT ON `admin` FOR EACH ROW BEGIN
-IF(select count(*) from admin where name = new.name) > 0 THEN
-signal sqlstate '45000' set message_text = 'This name is already in the database!';
-END IF;
-END
-$$
-DELIMITER ;
+('user', 'user1', '$2a$12$7vzxvwXTZKBfmLfo5uXswO3eQGOVDINlaC4J5rUhjQPjPCrRDwFou', 'Senior Librarian');
 
 -- --------------------------------------------------------
 
@@ -78,15 +54,15 @@ DELIMITER ;
 --
 
 CREATE TABLE `book` (
-  `bookID` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `author` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `publisher` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `bookID` varchar(15) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `author` varchar(255) NOT NULL,
+  `publisher` varchar(255) NOT NULL,
+  `type` varchar(20) NOT NULL,
   `price` decimal(10,2) NOT NULL,
-  `ISBN` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `stats` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Available'
+  `ISBN` varchar(20) NOT NULL,
+  `datetime` datetime NOT NULL DEFAULT current_timestamp(),
+  `stats` varchar(20) NOT NULL DEFAULT 'Available'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -94,17 +70,18 @@ CREATE TABLE `book` (
 --
 
 INSERT INTO `book` (`bookID`, `title`, `author`, `publisher`, `type`, `price`, `ISBN`, `datetime`, `stats`) VALUES
-('F000001', 'Happiness', 'Oshimi Syuzo', 'Pelangi', 'Fiction', 25.00, '4521452362', '2022-09-01 17:23:48', 'Available'),
-('F000102', 'The Fable', 'Hanazawa Kengo', 'Tongli', 'Fiction', 25.00, '44444444', '2022-02-10 12:46:25', 'Borrowed'),
-('F000103', 'Under Ninja', 'Hanazawa Kengo', 'Tongli', 'Fiction', 25.00, '4525452362', '2022-09-01 17:23:00', 'Available'),
-('F000104', 'Sunny', 'Matsumoto Taiyo', 'Tongli', 'Fiction', 25.00, '963852741', '2022-02-23 14:18:11', 'Available'),
-('F000105', 'Homunculus', 'Yamamoto Hideo', 'Tongli', 'Fiction', 25.00, '741258963', '2022-02-23 14:24:54', 'Available'),
-('F000106', 'Dragon Ball', 'Toriyama Akira', 'Tongli', 'Fiction', 20.00, '45454545', '2022-08-14 16:06:25', 'Available'),
-('F000108', 'Rent A Girlfriend', 'Miyajima Reiji', 'Tongli', 'Fiction', 25.00, '52147852369', '2022-09-01 17:15:31', 'Available'),
-('F000109', 'Chainsawman', 'Fujimoto Tatsuki', 'Tongli', 'Fiction', 25.00, '54632987654', '2022-09-01 17:17:39', 'Available'),
-('F000110', 'Firepunch', 'Fujimoto Tatsuki', 'Tongli', 'Fiction', 25.00, '52636354152', '2024-02-10 23:29:59', 'Available'),
-('F000111', 'Aku No Hana', 'Oshimi Syuzo', 'Tongli', 'Fiction', 25.00, '54233632155', '2024-02-10 23:29:59', 'Available'),
-('F000112', 'Gyaru Gohan', 'Taiyo Marii', 'Tongli', 'Fiction', 25.00, '456321456', '2024-02-10 23:29:59', 'Available');
+('F000001', 'Happiness', 'Oshimi Syuzo', 'Pelangi', 'Fiction', '25.00', '4521452362', '2022-09-01 17:23:48', 'Available'),
+('F000102', 'The Fable', 'Hanazawa Kengo', 'Tongli', 'Fiction', '25.00', '44444444', '2022-02-10 12:46:25', 'Available'),
+('F000103', 'Under Ninja', 'Hanazawa Kengo', 'Tongli', 'Fiction', '25.00', '4525452362', '2022-09-01 17:23:00', 'Available'),
+('F000104', 'Sunny', 'Matsumoto Taiyo', 'Tongli', 'Fiction', '25.00', '963852741', '2022-02-23 14:18:11', 'Available'),
+('F000105', 'Homunculus', 'Yamamoto Hideo', 'Tongli', 'Fiction', '25.00', '741258963', '2022-02-23 14:24:54', 'Available'),
+('F000106', 'Dragon Ball', 'Toriyama Akira', 'Tongli', 'Fiction', '20.00', '45454545', '2022-08-14 16:06:25', 'Available'),
+('F000108', 'Rent A Girlfriend', 'Miyajima Reiji', 'Tongli', 'Fiction', '25.00', '52147852369', '2022-09-01 17:15:31', 'Available'),
+('F000109', 'Chainsawman', 'Fujimoto Tatsuki', 'Tongli', 'Fiction', '25.00', '54632987654', '2022-09-01 17:17:39', 'Available'),
+('F000110', 'Firepunch', 'Fujimoto Tatsuki', 'Tongli', 'Fiction', '25.00', '52636354152', '2022-09-01 17:19:24', 'Available'),
+('F000111', 'Aku No Hana', 'Oshimi Syuzo', 'Tongli', 'Fiction', '25.00', '54233632155', '2022-09-01 17:22:30', 'Available'),
+('F000112', 'Gyaru Gohan', 'Taiyo Marii', 'Tongli', 'Fiction', '25.00', '456321456', '2022-09-01 17:33:32', 'Available'),
+('F000113', 'ABC book', 'no name', 'Pelangi', 'Fiction', '10.00', '1234567', '2024-02-05 11:18:44', 'Available');
 
 -- --------------------------------------------------------
 
@@ -113,13 +90,13 @@ INSERT INTO `book` (`bookID`, `title`, `author`, `publisher`, `type`, `price`, `
 --
 
 CREATE TABLE `borrow` (
-  `borrowID` int NOT NULL,
-  `bookID` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `memberID` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `Bdate` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `Rdate` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `status` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Borrowing',
-  `penalty` decimal(10,2) NOT NULL DEFAULT '0.00'
+  `borrowID` int(11) NOT NULL,
+  `bookID` varchar(15) DEFAULT NULL,
+  `memberID` varchar(10) DEFAULT NULL,
+  `Bdate` varchar(20) NOT NULL,
+  `Rdate` varchar(20) NOT NULL,
+  `status` varchar(15) NOT NULL DEFAULT 'Borrowing',
+  `penalty` decimal(10,2) NOT NULL DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -127,19 +104,30 @@ CREATE TABLE `borrow` (
 --
 
 INSERT INTO `borrow` (`borrowID`, `bookID`, `memberID`, `Bdate`, `Rdate`, `status`, `penalty`) VALUES
-(1, 'F000001', '1211104379', '2024-01-15', '2024-01-22', 'Returned', 0.00),
-(2, 'F000102', '1211104379', '2024-01-24 ', '2024-01-31', 'Returned', 0.00),
-(3, 'F000001', '1211104379', '2024-01-24 ', '2024-01-31', 'Returned', 0.00),
-(4, 'F000102', '1211104379', '2024-01-24 ', '2024-01-31', 'Returned', 0.00),
-(5, 'F000001', '1211104379', '2024-01-24 ', '2024-01-31', 'Returned', 0.00),
-(6, 'F000102', '1211104379', '2024-01-24 ', '2024-01-31', 'Returned', 0.00),
-(7, 'F000001', '1211104379', '2024-01-24 ', '2024-01-31', 'Returned', 0.00),
-(8, 'F000102', '1211104379', '2024-01-24 ', '2024-01-31', 'Returned', 0.00),
-(9, 'F000102', '1211104379', '2024-01-15', '2024-01-22', 'Returned', 0.00),
-(10, 'F000001', '1211104379', '2024-01-15', '2024-01-22', 'Returned', 0.00),
-(11, 'F000102', '1211104379', '2024-01-15', '2024-01-22', 'Returned', 0.00),
-(30, 'F000001', '1211104379', '2024-02-10', '2024-02-17', 'Returned', 0.00),
-(31, 'F000102', '1211104379', '2024-02-10', '2024-02-17', 'Borrowing', 0.00);
+(1, 'F000001', '2324763', '2024-01-15', '2024-01-22', 'Returned', '0.00'),
+(2, 'F000102', '2324763', '2024-01-24 ', '2024-01-31', 'Returned', '0.00'),
+(3, 'F000001', '2324763', '2024-01-24 ', '2024-01-31', 'Returned', '0.00'),
+(4, 'F000102', '2324763', '2024-01-24 ', '2024-01-31', 'Returned', '0.00'),
+(5, 'F000001', '2324763', '2024-01-24 ', '2024-01-31', 'Returned', '0.00'),
+(6, 'F000102', '2324763', '2024-01-24 ', '2024-01-31', 'Returned', '0.00'),
+(7, 'F000001', '2324763', '2024-01-24 ', '2024-01-31', 'Returned', '0.00'),
+(8, 'F000102', '2324763', '2024-01-24 ', '2024-01-31', 'Returned', '0.00'),
+(9, 'F000102', '2324763', '2024-01-15', '2024-01-22', 'Returned', '0.00'),
+(10, 'F000001', '2324763', '2024-01-15', '2024-01-22', 'Returned', '0.00'),
+(11, 'F000102', '2324763', '2024-01-15', '2024-01-22', 'Returned', '0.00'),
+(31, 'F000109', '1211103685', '2024-01-31', '2024-02-07', 'Returned', '0.00'),
+(32, 'F000109', '1211103685', '2024-02-01', '2024-02-08', 'Returned', '0.00'),
+(33, 'F000113', '1211102302', '2024-02-05', '2024-02-12', 'Returned', '0.00'),
+(34, 'F000109', '1211102302', '2024-02-11', '2024-02-18', 'Returned', '0.00'),
+(35, 'F000109', '1211102302', '2024-02-11', '2024-02-18', 'Returned', '0.00'),
+(38, 'F000109', '1211102302', '2024-02-11', '2024-02-18', 'Returned', '0.00'),
+(39, 'F000109', '1211102302', '2024-02-11', '2024-02-18', 'Returned', '0.00'),
+(40, 'F000109', '1211102302', '2024-02-11', '2024-02-18', 'Returned', '0.00'),
+(41, 'F000109', '1211102302', '2024-02-12', '2024-02-19', 'Returned', '0.00'),
+(42, 'F000109', '1211102302', '2024-02-12', '2024-02-19', 'Returned', '0.00'),
+(43, 'F000109', '1211102302', '2024-02-12', '2024-02-19', 'Returned', '0.00'),
+(44, 'F000109', '1211102302', '2024-02-12', '2024-02-19', 'Returned', '0.00'),
+(45, 'F000109', '1211102302', '2024-02-12', '2024-02-19', 'Returned', '0.00');
 
 -- --------------------------------------------------------
 
@@ -148,13 +136,13 @@ INSERT INTO `borrow` (`borrowID`, `bookID`, `memberID`, `Bdate`, `Rdate`, `statu
 --
 
 CREATE TABLE `member` (
-  `memberID` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `major` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `level` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `telephone` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `penalty` decimal(10,2) NOT NULL DEFAULT '0.00'
+  `memberID` varchar(10) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `major` varchar(15) NOT NULL,
+  `level` varchar(20) NOT NULL,
+  `telephone` varchar(15) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `penalty` decimal(10,2) NOT NULL DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -162,8 +150,9 @@ CREATE TABLE `member` (
 --
 
 INSERT INTO `member` (`memberID`, `name`, `major`, `level`, `telephone`, `email`, `penalty`) VALUES
-('1211103685', 'Thu Xin Yun', 'BIA', 'Student', '0112345678', '1211103685@student.mmu.edu.my', 0.00),
-('1211104379', 'Melvin Kwan Yii Syn', 'ST', 'Student', '0123456789', 'melvinkwanys@gmail.com', 0.00);
+('1211102302', 'Soong ', 'ST', 'Student', '01110636285', '1211102302@student.mmu.edu.my', '0.00'),
+('1211103685', 'Thu Xin Yun', 'BIA', 'Student', '0112345678', '1211103685@student.mmu.edu.my', '0.00'),
+('2324763', 'Melvin Kwan Yii Syn', '5 Delima', 'Student', '0123456789', 'melvinkwanys@gmail.com', '0.00');
 
 -- --------------------------------------------------------
 
@@ -172,11 +161,11 @@ INSERT INTO `member` (`memberID`, `name`, `major`, `level`, `telephone`, `email`
 --
 
 CREATE TABLE `pma__bookmark` (
-  `id` int UNSIGNED NOT NULL,
-  `dbase` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `user` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `label` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
-  `query` text CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL
+  `id` int(10) UNSIGNED NOT NULL,
+  `dbase` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `user` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `label` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `query` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Bookmarks';
 
 -- --------------------------------------------------------
@@ -186,14 +175,14 @@ CREATE TABLE `pma__bookmark` (
 --
 
 CREATE TABLE `pma__central_columns` (
-  `db_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `col_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `col_type` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `col_length` text CHARACTER SET utf8mb3 COLLATE utf8mb3_bin,
-  `col_collation` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
+  `db_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `col_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `col_type` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `col_length` text CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `col_collation` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `col_isNull` tinyint(1) NOT NULL,
-  `col_extra` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT '',
-  `col_default` text CHARACTER SET utf8mb3 COLLATE utf8mb3_bin
+  `col_extra` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
+  `col_default` text CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Central list of columns';
 
 -- --------------------------------------------------------
@@ -203,16 +192,16 @@ CREATE TABLE `pma__central_columns` (
 --
 
 CREATE TABLE `pma__column_info` (
-  `id` int UNSIGNED NOT NULL,
-  `db_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `table_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `column_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `comment` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
-  `mimetype` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
-  `transformation` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `transformation_options` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `input_transformation` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `input_transformation_options` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT ''
+  `id` int(10) UNSIGNED NOT NULL,
+  `db_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `table_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `column_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `comment` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `mimetype` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `transformation` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `transformation_options` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `input_transformation` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `input_transformation_options` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Column information for phpMyAdmin';
 
 -- --------------------------------------------------------
@@ -222,8 +211,8 @@ CREATE TABLE `pma__column_info` (
 --
 
 CREATE TABLE `pma__designer_settings` (
-  `username` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `settings_data` text CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL
+  `username` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `settings_data` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Settings related to Designer';
 
 -- --------------------------------------------------------
@@ -233,11 +222,11 @@ CREATE TABLE `pma__designer_settings` (
 --
 
 CREATE TABLE `pma__export_templates` (
-  `id` int UNSIGNED NOT NULL,
-  `username` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `export_type` varchar(10) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `template_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `template_data` text CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL
+  `id` int(10) UNSIGNED NOT NULL,
+  `username` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `export_type` varchar(10) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `template_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `template_data` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Saved export templates';
 
 -- --------------------------------------------------------
@@ -247,8 +236,8 @@ CREATE TABLE `pma__export_templates` (
 --
 
 CREATE TABLE `pma__favorite` (
-  `username` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `tables` text CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL
+  `username` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `tables` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Favorite tables';
 
 -- --------------------------------------------------------
@@ -258,12 +247,12 @@ CREATE TABLE `pma__favorite` (
 --
 
 CREATE TABLE `pma__history` (
-  `id` bigint UNSIGNED NOT NULL,
-  `username` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `db` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `table` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `timevalue` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `sqlquery` text CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `username` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `db` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `table` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `timevalue` timestamp NOT NULL DEFAULT current_timestamp(),
+  `sqlquery` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='SQL history for phpMyAdmin';
 
 -- --------------------------------------------------------
@@ -273,11 +262,11 @@ CREATE TABLE `pma__history` (
 --
 
 CREATE TABLE `pma__navigationhiding` (
-  `username` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `item_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `item_type` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `db_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `table_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL
+  `username` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `item_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `item_type` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `db_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `table_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Hidden items of navigation tree';
 
 -- --------------------------------------------------------
@@ -287,9 +276,9 @@ CREATE TABLE `pma__navigationhiding` (
 --
 
 CREATE TABLE `pma__pdf_pages` (
-  `db_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `page_nr` int UNSIGNED NOT NULL,
-  `page_descr` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT ''
+  `db_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `page_nr` int(10) UNSIGNED NOT NULL,
+  `page_descr` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='PDF relation pages for phpMyAdmin';
 
 -- --------------------------------------------------------
@@ -299,8 +288,8 @@ CREATE TABLE `pma__pdf_pages` (
 --
 
 CREATE TABLE `pma__recent` (
-  `username` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `tables` text CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL
+  `username` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `tables` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Recently accessed tables';
 
 --
@@ -308,7 +297,7 @@ CREATE TABLE `pma__recent` (
 --
 
 INSERT INTO `pma__recent` (`username`, `tables`) VALUES
-('root', '[{\"db\":\"oop_library\",\"table\":\"admin\"},{\"db\":\"oop_library\",\"table\":\"book\"},{\"db\":\"oop_library\",\"table\":\"borrow\"},{\"db\":\"oop_library\",\"table\":\"member\"},{\"db\":\"oop_library\",\"table\":\"request\"},{\"db\":\"library\",\"table\":\"member\"},{\"db\":\"library\",\"table\":\"admin\"},{\"db\":\"library\",\"table\":\"book\"},{\"db\":\"library\",\"table\":\"borrow\"},{\"db\":\"assignment_tracker\",\"table\":\"assignment\"}]');
+('root', '[{\"db\":\"oop_library\",\"table\":\"borrow\"},{\"db\":\"oop_library\",\"table\":\"book\"},{\"db\":\"oop_library\",\"table\":\"member\"},{\"db\":\"oop_library\",\"table\":\"admin\"},{\"db\":\"oop_library\",\"table\":\"request\"},{\"db\":\"library\",\"table\":\"member\"},{\"db\":\"library\",\"table\":\"admin\"},{\"db\":\"library\",\"table\":\"book\"},{\"db\":\"library\",\"table\":\"borrow\"},{\"db\":\"assignment_tracker\",\"table\":\"assignment\"}]');
 
 -- --------------------------------------------------------
 
@@ -317,12 +306,12 @@ INSERT INTO `pma__recent` (`username`, `tables`) VALUES
 --
 
 CREATE TABLE `pma__relation` (
-  `master_db` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `master_table` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `master_field` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `foreign_db` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `foreign_table` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `foreign_field` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT ''
+  `master_db` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `master_table` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `master_field` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `foreign_db` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `foreign_table` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `foreign_field` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Relation table';
 
 -- --------------------------------------------------------
@@ -332,11 +321,11 @@ CREATE TABLE `pma__relation` (
 --
 
 CREATE TABLE `pma__savedsearches` (
-  `id` int UNSIGNED NOT NULL,
-  `username` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `db_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `search_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `search_data` text CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL
+  `id` int(10) UNSIGNED NOT NULL,
+  `username` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `db_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `search_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `search_data` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Saved searches';
 
 -- --------------------------------------------------------
@@ -346,11 +335,11 @@ CREATE TABLE `pma__savedsearches` (
 --
 
 CREATE TABLE `pma__table_coords` (
-  `db_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `table_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `pdf_page_number` int NOT NULL DEFAULT '0',
-  `x` float UNSIGNED NOT NULL DEFAULT '0',
-  `y` float UNSIGNED NOT NULL DEFAULT '0'
+  `db_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `table_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `pdf_page_number` int(11) NOT NULL DEFAULT 0,
+  `x` float UNSIGNED NOT NULL DEFAULT 0,
+  `y` float UNSIGNED NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Table coordinates for phpMyAdmin PDF output';
 
 -- --------------------------------------------------------
@@ -360,9 +349,9 @@ CREATE TABLE `pma__table_coords` (
 --
 
 CREATE TABLE `pma__table_info` (
-  `db_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `table_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `display_field` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT ''
+  `db_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `table_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `display_field` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Table information for phpMyAdmin';
 
 --
@@ -380,11 +369,11 @@ INSERT INTO `pma__table_info` (`db_name`, `table_name`, `display_field`) VALUES
 --
 
 CREATE TABLE `pma__table_uiprefs` (
-  `username` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `db_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `table_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `prefs` text CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `username` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `db_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `table_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `prefs` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `last_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Tables'' UI preferences';
 
 --
@@ -392,7 +381,7 @@ CREATE TABLE `pma__table_uiprefs` (
 --
 
 INSERT INTO `pma__table_uiprefs` (`username`, `db_name`, `table_name`, `prefs`, `last_update`) VALUES
-('root', 'oop_library', 'book', '{\"CREATE_TIME\":\"2024-01-25 17:27:21\"}', '2024-01-30 11:59:50');
+('root', 'oop_library', 'book', '{\"CREATE_TIME\":\"2024-01-25 17:27:21\",\"col_order\":[0,1,2,3,4,5,6,7,8],\"col_visib\":[1,1,1,1,1,1,1,1,1]}', '2024-01-29 17:08:08');
 
 -- --------------------------------------------------------
 
@@ -401,16 +390,16 @@ INSERT INTO `pma__table_uiprefs` (`username`, `db_name`, `table_name`, `prefs`, 
 --
 
 CREATE TABLE `pma__tracking` (
-  `db_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `table_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `version` int UNSIGNED NOT NULL,
+  `db_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `table_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `version` int(10) UNSIGNED NOT NULL,
   `date_created` datetime NOT NULL,
   `date_updated` datetime NOT NULL,
-  `schema_snapshot` text CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `schema_sql` text CHARACTER SET utf8mb3 COLLATE utf8mb3_bin,
-  `data_sql` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_bin,
-  `tracking` set('UPDATE','REPLACE','INSERT','DELETE','TRUNCATE','CREATE DATABASE','ALTER DATABASE','DROP DATABASE','CREATE TABLE','ALTER TABLE','RENAME TABLE','DROP TABLE','CREATE INDEX','DROP INDEX','CREATE VIEW','ALTER VIEW','DROP VIEW') CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
-  `tracking_active` int UNSIGNED NOT NULL DEFAULT '1'
+  `schema_snapshot` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `schema_sql` text CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `data_sql` longtext CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `tracking` set('UPDATE','REPLACE','INSERT','DELETE','TRUNCATE','CREATE DATABASE','ALTER DATABASE','DROP DATABASE','CREATE TABLE','ALTER TABLE','RENAME TABLE','DROP TABLE','CREATE INDEX','DROP INDEX','CREATE VIEW','ALTER VIEW','DROP VIEW') CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `tracking_active` int(10) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Database changes tracking for phpMyAdmin';
 
 -- --------------------------------------------------------
@@ -420,9 +409,9 @@ CREATE TABLE `pma__tracking` (
 --
 
 CREATE TABLE `pma__userconfig` (
-  `username` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `timevalue` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `config_data` text CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL
+  `username` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `timevalue` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `config_data` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='User preferences storage for phpMyAdmin';
 
 --
@@ -430,7 +419,7 @@ CREATE TABLE `pma__userconfig` (
 --
 
 INSERT INTO `pma__userconfig` (`username`, `timevalue`, `config_data`) VALUES
-('root', '2024-02-11 17:05:38', '{\"Console\\/Mode\":\"collapse\",\"NavigationWidth\":182,\"DefaultConnectionCollation\":\"\"}');
+('root', '2024-01-30 11:46:37', '{\"Console\\/Mode\":\"collapse\",\"NavigationWidth\":182,\"DefaultConnectionCollation\":\"\"}');
 
 -- --------------------------------------------------------
 
@@ -439,9 +428,9 @@ INSERT INTO `pma__userconfig` (`username`, `timevalue`, `config_data`) VALUES
 --
 
 CREATE TABLE `pma__usergroups` (
-  `usergroup` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `tab` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `allowed` enum('Y','N') CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT 'N'
+  `usergroup` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `tab` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `allowed` enum('Y','N') CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT 'N'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='User groups with configured menu items';
 
 -- --------------------------------------------------------
@@ -451,8 +440,8 @@ CREATE TABLE `pma__usergroups` (
 --
 
 CREATE TABLE `pma__users` (
-  `username` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `usergroup` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL
+  `username` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `usergroup` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Users and their assignments to user groups';
 
 -- --------------------------------------------------------
@@ -462,11 +451,11 @@ CREATE TABLE `pma__users` (
 --
 
 CREATE TABLE `request` (
-  `requestID` int NOT NULL,
-  `memberID` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `bookID` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `requestID` int(11) NOT NULL,
+  `memberID` varchar(25) DEFAULT NULL,
+  `bookID` varchar(25) DEFAULT NULL,
   `requestDate` date NOT NULL,
-  `status` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Pending'
+  `status` varchar(15) NOT NULL DEFAULT 'Pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -474,7 +463,7 @@ CREATE TABLE `request` (
 --
 
 INSERT INTO `request` (`requestID`, `memberID`, `bookID`, `requestDate`, `status`) VALUES
-(5, '1211104379', 'F000108', '2023-06-23', 'Approved');
+(5, '2324763', 'F000108', '2023-06-23', 'Approved');
 
 --
 -- Indexes for dumped tables
@@ -642,49 +631,49 @@ ALTER TABLE `request`
 -- AUTO_INCREMENT for table `borrow`
 --
 ALTER TABLE `borrow`
-  MODIFY `borrowID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `borrowID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT for table `pma__bookmark`
 --
 ALTER TABLE `pma__bookmark`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `pma__column_info`
 --
 ALTER TABLE `pma__column_info`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `pma__export_templates`
 --
 ALTER TABLE `pma__export_templates`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `pma__history`
 --
 ALTER TABLE `pma__history`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `pma__pdf_pages`
 --
 ALTER TABLE `pma__pdf_pages`
-  MODIFY `page_nr` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `page_nr` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `pma__savedsearches`
 --
 ALTER TABLE `pma__savedsearches`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `request`
 --
 ALTER TABLE `request`
-  MODIFY `requestID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `requestID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
