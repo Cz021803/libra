@@ -57,8 +57,16 @@ public class EditDeleteView extends JFrame {
                 }
                 else if(e.getSource() == editBtn && selectedOption.equals("Edit Admin"))
                 {
-                    dispose();
-                    adminModel.editAdmin(searchField.getText());
+                    if(Login.getAdminType().equals("Senior Librarian"))
+                    {
+                        dispose();
+                        adminModel.editAdmin(searchField.getText());
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(null, "Only Senior Librarian can modify details of librarian");
+                    }
+
                 }
                 else
                 {
