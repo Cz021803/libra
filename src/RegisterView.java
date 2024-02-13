@@ -301,8 +301,25 @@ public class RegisterView extends JFrame {
                 String type = (String) typeComboBox.getSelectedItem();
                 double price = Double.parseDouble(priceField.getText());
                 String isbn = isbnField.getText();
+                String formattedBookID = "";
 
-                boolean result = bookModel.insertRecord(bookID, title, author, publisher, type, price, isbn);
+                switch(type)
+                {
+                    case "Fiction":
+                        formattedBookID = "F" + bookID;
+                        break;
+                    case "Non-Fiction":
+                        formattedBookID = "NF" + bookID;
+                        break;
+                    case "Journal":
+                        formattedBookID = "J" + bookID;
+                        break;
+                    case "Reference":
+                        formattedBookID = "R" + bookID;
+                        break;
+                }
+
+                boolean result = bookModel.insertRecord(formattedBookID, title, author, publisher, type, price, isbn);
 
                 if(result)
                 {
